@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>database</type>
+		<description>Language labels for database tables/fields belonging to extension 'mn_episerver2typo3'</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="pages.tx_mnepiserver2typo3_episerver_id">EPiServer Id</label>
+			<label index="tx_mnepiserver2typo3_episerver">EPiServer</label>
+			<label index="tx_mnepiserver2typo3_episerver.domain">Domain</label>
+			<label index="tx_mnepiserver2typo3_episerver.ws_username">Webservice username</label>
+			<label index="tx_mnepiserver2typo3_episerver.ws_password">Webservice password</label>
+		</languageKey>
+		<languageKey index="se" type="array">
+			<label index="pages.tx_mnepiserver2typo3_episerver_id">EPiServer Id</label>
+			<label index="tx_mnepiserver2typo3_episerver">EPiServer</label>
+			<label index="tx_mnepiserver2typo3_episerver.domain">Domän</label>
+			<label index="tx_mnepiserver2typo3_episerver.ws_username">Webservice användarnamn</label>
+			<label index="tx_mnepiserver2typo3_episerver.ws_password">Webservice lösenord</label>
+		</languageKey>
+	</data>
+</T3locallang>
