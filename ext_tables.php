@@ -29,7 +29,7 @@ t3lib_extMgm::addToAllTCAtypes('pages','tx_mnepiserver2typo3_episerver_id;;;;1-1
 $TCA['tx_mnepiserver2typo3_episerver'] = array (
 	'ctrl' => array (
 		'title'     => 'LLL:EXT:mn_episerver2typo3/locallang_db.xml:tx_mnepiserver2typo3_episerver',		
-		'label'     => 'uid',	
+		'label'     => 'domain',	
 		'tstamp'    => 'tstamp',
 		'crdate'    => 'crdate',
 		'cruser_id' => 'cruser_id',
