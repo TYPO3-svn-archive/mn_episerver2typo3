@@ -73,7 +73,7 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                                 $pageId = $pageProperties["Value"];
                             }
                         }
-                        $pageData[$pageId] = $tempData;
+                        $pageData[$pageId] = $this->generatePageDataArray($tempData);
                     }    
                 }
                 
@@ -102,6 +102,25 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
 
 		return $success;
 	}
+    
+    /**
+     * tx_mnepiserver2typo3_ImportDataTask::generatePageDataArray()
+     * Generate a page data array.
+     * 
+     * @param array $data
+     * @return array $pageArray
+     */
+    private function generatePageDataArray($data) {
+        $pageArray = array();
+        foreach($data as $tempData) {
+            if($tempData["Name"] == "PageLink" || $tempData["Name"] == "PageParentLink" || $tempData["Name"] == "PageDeleted" 
+            || $tempData["Name"] == "PageSaved" || $tempData["Name"] == "PageChanged" || $tempData["Name"] == "PageCreatedBy" 
+            || $tempData["Name"] == "PageMasterLanguageBranch" || $tempData["Name"] == "PageName") {
+                $pageArray[$tempData["Name"]] = $tempData["Value"];
+            }
+        }
+        return $pageArray;
+    }
 
     /**
      * Getting the login credentials for the webservice.
