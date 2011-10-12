@@ -63,7 +63,7 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                 
                 $pageData = array();
                 //Check if the result is an array
-                if(is_array($firstLevel["GetChildrenResult"])) {
+                /*if(is_array($firstLevel["GetChildrenResult"])) {
                     foreach($firstLevel["GetChildrenResult"]["RawPage"] as $pageItem) {
                         $tempData = array();
                         $pageId = 0;
@@ -76,7 +76,22 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                         }
                         $pageData[$pageId] = $this->generatePageDataArray($tempData);
                     }    
-                }
+                }*/
+                
+                $pageData = array( array(
+                        PageLink => 4,
+                        PageParentLink => 3,
+                        PageDeleted => "",
+                        PageSaved => "09/15/2011 10:47:57",
+                        PageChanged => "08/30/2011 13:32:20",
+                        PageCreatedBy => "",
+                        PageMasterLanguageBranch => "en",
+                        PageName => "EPiServer page",
+                    )
+                );
+                
+                /*print_r($pageData);
+                exit;*/
                 
                 $insertPage = new DatabaseQueries();
                 foreach($pageData as $page) {

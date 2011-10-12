@@ -84,7 +84,7 @@ class tx_mnepiserver2typo3_ImportDataTask_AdditionalFieldProvider implements tx_
 		$additionalFields = array();
 		$additionalFields[$fieldID] = array(
 			'code'     => $fieldCode,
-			'label'    => 'LLL:EXT:mn_episerver2typo3/mod1/locallang.xml:label.domain',
+			'label'    => 'LLL:EXT:mn_episerver2typo3/locallang.xml:label.domain',
 			'cshKey'   => '_MOD_tools_txmnepiserver2typo3M1',
 			'cshLabel' => $fieldID
 		);

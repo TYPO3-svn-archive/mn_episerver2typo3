@@ -63,11 +63,20 @@ class DatabaseQueries {
      */
     public function insertPageData($pageArray) {
         $insertArray = array(
-            'pid' => 0,//$pageArray["pid"],
+            'pid' => 1,//$pageArray["pid"],
             'title' => $pageArray["PageName"],
             'tx_mnepiserver2typo3_episerver_id' => $pageArray["PageLink"],
             'tstamp' => mktime(),
-            'crdate' => mktime(),            
+            'crdate' => mktime(),   
+            'urltype' => 1,
+            'doktype' => 1,
+            'cruser_id' => 1,
+            'sorting' => 512,    
+            /*'t3ver_label' => '',
+            'perms_userid' => 1,
+            'perms_groupid' => 5,
+            'perms_user' =>	31,
+            'perms_group' => 27,   */  
         );
         $res = $GLOBALS['TYPO3_DB']->exec_INSERTquery('pages', $insertArray);
         $lastInsertId = mysql_insert_id();
