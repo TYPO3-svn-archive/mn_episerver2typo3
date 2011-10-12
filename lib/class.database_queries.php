@@ -54,6 +54,26 @@ class DatabaseQueries {
         return $data;
     }
     
+    /**
+     * DatabaseQueries::insertPageData()
+     * Insert the page data into the pages table.
+     * 
+     * @param array $pageArray
+     * @return integer $lastInsertId
+     */
+    public function insertPageData($pageArray) {
+        $insertArray = array(
+            'pid' => 0,//$pageArray["pid"],
+            'title' => $pageArray["PageName"],
+            'tx_mnepiserver2typo3_episerver_id' => $pageArray["PageLink"],
+            'tstamp' => mktime(),
+            'crdate' => mktime(),            
+        );
+        $res = $GLOBALS['TYPO3_DB']->exec_INSERTquery('pages', $insertArray);
+        $lastInsertId = mysql_insert_id();
+        return $lastInsertId;
+    }
+    
 }
 
 ?>

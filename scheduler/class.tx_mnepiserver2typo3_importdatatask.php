@@ -72,19 +72,22 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                             if($pageProperties["Name"] == "PageLink") {
                                 $pageId = $pageProperties["Value"];
                             }
+                            
                         }
                         $pageData[$pageId] = $this->generatePageDataArray($tempData);
                     }    
                 }
                 
-                print_r($pageData);
-                exit;
+                $insertPage = new DatabaseQueries();
+                foreach($pageData as $page) {
+                    $pageId = $insertPage->insertPageData($page);
+                }
                 
-                //$success = $webserviceObject->testEpiserverConnection();
+                $success = true;
                 
                 if($success == true) {
                     // Logging a successful test to EPiServer 
-                    t3lib_div::devLog('[tx_mnepiserver2typo3_ImportDataTask]: Connection with EPiServer is working for: ' . $this->domain, 'scheduler', 0);    
+                    t3lib_div::devLog('[tx_mnepiserver2typo3_ImportDataTask]: Succesfully imported data from: ' . $this->domain, 'scheduler', 0);    
                 }   
                 else {
                     // Logging a successful test to EPiServer 
