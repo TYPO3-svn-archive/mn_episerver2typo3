@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>Locallang</type>
+		<description>Language labels for frontend</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="testConnectionTask.name">Test EPiServer connection</label>
+            <label index="testConnectionTask.description">Test EPiServer connection with a ping to the webservice</label>
+            <label index="importDataTask.name">Import page data/structure from EPiServer</label>
+            <label index="importDataTask.description">Import page data/structure from EPiServer</label>
+            <label index="label.testedDomain">Domain to test</label>
+		</languageKey>
+		<languageKey index="se" type="array">
+            <label index="testConnectionTask.name">Test EPiServer connection</label>
+            <label index="testConnectionTask.description">Test EPiServer connection with a ping to the webservice</label>
+            <label index="importDataTask.name">Import page data/structure from EPiServer</label>
+            <label index="importDataTask.description">Import page data/structure from EPiServer</label>
+            <label index="label.testedDomain">Domain to test</label>
+		</languageKey>
+	</data>
+</T3locallang>

@@ -22,16 +22,18 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+require_once(t3lib_extMgm::extPath('mn_episerver2typo3') . "lib/class.database_queries.php");
+
 /**
- * Aditional fields provider class for usage with the Scheduler's test task
+ * Aditional fields provider class for usage with the Test Connection Task
  *
- * @author		François Suter <francois@typo3.org>
+ * @author		Mattias Nilsson <tollepjaer@gmail.com>
  * @package		TYPO3
  * @subpackage	tx_scheduler
  *
  * $Id$
  */
-class tx_scheduler_TestTask_AdditionalFieldProvider implements tx_scheduler_AdditionalFieldProvider {
+class tx_mnepiserver2typo3_TestConnectionTask_AdditionalFieldProvider implements tx_scheduler_AdditionalFieldProvider {
 
 	/**
 	 * This method is used to define new fields for adding or editing a task
@@ -64,10 +66,18 @@ class tx_scheduler_TestTask_AdditionalFieldProvider implements tx_scheduler_Addi
 				$taskInfo['email'] = '';
 			}
 		}
-
-			// Write the code for the field
+        
+		// Write the code for the field
 		$fieldID = 'task_email';
-		$fieldCode = '<input type="text" name="tx_scheduler[email]" id="' . $fieldID . '" value="' . $taskInfo['email'] . '" size="30" />';
+        
+        $databaseQueries = new DatabaseQueries();
+        $fieldCode = '<select name="tx_scheduler[email]" id="' . $fieldID . '">';
+        foreach($databaseQueries->getAllWebserviceCredentials() as $item) {
+            $fieldCode .= '<option value="' . $item["uid"] . '">' . $item["domain"] . ": " . $item["ws_username"] . "</option>";
+        }
+        $fieldCode .= '</select>';        
+        
+		//$fieldCode = '<input type="text" name="tx_scheduler[email]" id="' . $fieldID . '" value="' . $taskInfo['email'] . '" size="30" />';
 		$additionalFields = array();
 		$additionalFields[$fieldID] = array(
 			'code'     => $fieldCode,
