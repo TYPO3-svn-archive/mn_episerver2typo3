@@ -16,6 +16,7 @@ if (!defined ('TYPO3_MODE')) {
 		'extension'        => $_EXTKEY,
 		'title'            => 'LLL:EXT:' . $_EXTKEY . '/locallang.xml:importDataTask.name',
 		'description'      => 'LLL:EXT:' . $_EXTKEY . '/locallang.xml:importDataTask.description',
+        'additionalFields' => 'tx_mnepiserver2typo3_ImportDataTask_AdditionalFieldProvider'
 	);
 	
 ?>

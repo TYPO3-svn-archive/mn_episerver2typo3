@@ -56,14 +56,14 @@ class WebserviceConnect {
         return $success;
     }
     
-    
     /**
      * WebserviceConnect::getPage()
+     * Get the page information/data.
      * 
      * @param integer $pageId
      * @param integer $workId
      * @param string $remoteSite
-     * @return
+     * @return array/boolean $success
      */
     public function getPage($pageId, $workId, $remoteSite) {
         $success = false;
@@ -74,6 +74,40 @@ class WebserviceConnect {
         );
         $this->connectToWebservice();
         $result = $this->client->call('GetPage', array('pageLink' => $param), '', '', false, true);
+        // Check for a fault
+        if ($this->client->fault) {
+        	$success = false;
+        } else {
+        	// Check for errors
+        	$err = $this->client->getError();
+        	if ($err) {
+        		$success = false;
+        	} else {
+                $success = $result;
+        	}
+        }
+        
+        return $success;
+    }
+    
+    /**
+     * WebserviceConnect::getPage()
+     * Get the page information/data.
+     * 
+     * @param integer $pageId
+     * @param integer $workId
+     * @param string $remoteSite
+     * @return array/boolean $success
+     */
+    public function getChildren($pageId, $workId, $remoteSite) {
+        $success = false;
+        $param = array(
+            'ID' => $pageId, 
+            'WorkID' => $workId, 
+            'RemoteSite' => $remoteSite
+        );
+        $this->connectToWebservice();
+        $result = $this->client->call('GetChildren', array('pageLink' => $param), '', '', false, true);
         // Check for a fault
         if ($this->client->fault) {
         	$success = false;

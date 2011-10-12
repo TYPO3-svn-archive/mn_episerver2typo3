@@ -36,11 +36,16 @@ require_once(t3lib_extMgm::extPath('mn_episerver2typo3') . "lib/class.webservice
  */
 class tx_mnepiserver2typo3_TestConnectionTask extends tx_scheduler_Task {
 
-    var $domain = "";
+    /**
+	 * A domain to be used during the process
+	 *
+	 * @var	string		$domain
+	 */
+	 var $domain = "";
 
 	/**
 	 * Function executed from the Scheduler.
-	 * Sends an email
+	 * Test the connection to EPiServer.
 	 *
 	 * @return	void
 	 */

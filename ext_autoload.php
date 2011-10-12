@@ -9,5 +9,6 @@ return array(
 	'tx_mnepiserver2typo3_testconnectiontask' => $extensionPath . 'scheduler/class.tx_mnepiserver2typo3_testconnectiontask.php',
     'tx_mnepiserver2typo3_testconnectiontask_additionalfieldprovider' => $extensionPath . 'scheduler/class.tx_mnepiserver2typo3_testconnectiontask_additionalfieldprovider.php',
 	'tx_mnepiserver2typo3_importdatatask' => $extensionPath . 'scheduler/class.tx_mnepiserver2typo3_importdatatask.php',
+    'tx_mnepiserver2typo3_importdatatask_additionalfieldprovider' => $extensionPath . 'scheduler/class.tx_mnepiserver2typo3_importdatatask_additionalfieldprovider.php',
 );
 ?>

@@ -22,6 +22,9 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+require_once(t3lib_extMgm::extPath('mn_episerver2typo3') . "lib/class.database_queries.php");
+require_once(t3lib_extMgm::extPath('mn_episerver2typo3') . "lib/class.webservice_connect.php");
+
 /**
  * Class "tx_mnepiserver2typo3_ImportDataTask" provides importing for the page data/structure
  *
@@ -32,94 +35,93 @@
  * $Id$
  */ 
 class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
-
+    
 	/**
-	 * An email address to be used during the process
+	 * A domain to be used during the process
 	 *
-	 * @var	string		$email
+	 * @var	string		$domain
 	 */
-	 var $email;
+	 var $domain = "";
 
 	/**
 	 * Function executed from the Scheduler.
-	 * Sends an email
+	 * Test the connection to EPiServer.
 	 *
 	 * @return	void
 	 */
 	public function execute() {
-		$success = false;
-        $this->email = "najs";
+		$success = false; 
+        $loginCredentials = $this->getLoginCredentials($this->domain);
         
-		if (!empty($this->email)) {
-				// If an email address is defined, send a message to it
-
-				// NOTE: the TYPO3_DLOG constant is not used in this case, as this is a test task
-				// and debugging is its main purpose anyway
-			t3lib_div::devLog('[tx_scheduler_TestTask]: Test email sent to "' . $this->email . '"', 'scheduler', 0);
-
-				// Get execution information
-			/*$exec = $this->getExecution();
-
-				// Get call method
-			if (basename(PATH_thisScript) == 'cli_dispatch.phpsh') {
-				$calledBy = 'CLI module dispatcher';
-				$site = '-';
-			} else {
-				$calledBy = 'TYPO3 backend';
-				$site = t3lib_div::getIndpEnv('TYPO3_SITE_URL');
-			}
-
-			$start = $exec->getStart();
-			$end = $exec->getEnd();
-			$interval = $exec->getInterval();
-			$multiple = $exec->getMultiple();
-			$cronCmd = $exec->getCronCmd();
-			$mailBody =
-				'SCHEDULER TEST-TASK' . LF
-				. '- - - - - - - - - - - - - - - -' . LF
-				. 'UID: ' . $this->taskUid . LF
-				. 'Sitename: ' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'] . LF
-				. 'Site: ' . $site . LF
-				. 'Called by: ' . $calledBy . LF
-				. 'tstamp: ' . date('Y-m-d H:i:s') . ' [' . time() . ']' . LF
-				. 'maxLifetime: ' . $this->scheduler->extConf['maxLifetime'] . LF
-				. 'start: ' . date('Y-m-d H:i:s', $start) . ' [' . $start . ']' . LF
-				. 'end: ' . ((empty($end)) ? '-' : (date('Y-m-d H:i:s', $end) . ' [' . $end . ']')) . LF
-				. 'interval: ' . $interval . LF
-				. 'multiple: ' . ($multiple ? 'yes' : 'no') . LF
-				. 'cronCmd: ' . ($cronCmd ? $cronCmd : 'not used');
-
-				// Prepare mailer and send the mail
-			try {
-				$mailer = t3lib_div::makeInstance('t3lib_mail_message');
-				$mailer->setFrom(array($this->email => 'SCHEDULER TEST-TASK'));
-				$mailer->setReplyTo(array($this->email => 'SCHEDULER TEST-TASK'));
-				$mailer->setSubject('SCHEDULER TEST-TASK');
-				$mailer->setBody($mailBody);
-				$mailer->setTo($this->email);
-				$mailsSend = $mailer->send();
-				$success = ($mailsSend>0);
-			} catch (Exception $e) {
-				throw new t3lib_exception($e->getMessage());
-			}*/
+		if (!empty($loginCredentials) && !empty($this->domain)) {
             
-            $success = true;
-            
+            try {
+                $this->domain = $loginCredentials["domain"];
+                $webserviceObject = new WebserviceConnect($this->domain, $loginCredentials["ws_username"], $loginCredentials["ws_password"]);
+                
+                $firstLevel = $webserviceObject->getChildren($loginCredentials["episerver_startpage_id"], 0, "http://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
+                
+                $pageData = array();
+                //Check if the result is an array
+                if(is_array($firstLevel["GetChildrenResult"])) {
+                    foreach($firstLevel["GetChildrenResult"]["RawPage"] as $pageItem) {
+                        $tempData = array();
+                        $pageId = 0;
+                        foreach($pageItem["Property"]["RawProperty"] as $pageProperties) {
+                            $tempData[] = $pageProperties;
+                            if($pageProperties["Name"] == "PageLink") {
+                                $pageId = $pageProperties["Value"];
+                            }
+                        }
+                        $pageData[$pageId] = $tempData;
+                    }    
+                }
+                
+                print_r($pageData);
+                exit;
+                
+                //$success = $webserviceObject->testEpiserverConnection();
+                
+                if($success == true) {
+                    // Logging a successful test to EPiServer 
+                    t3lib_div::devLog('[tx_mnepiserver2typo3_ImportDataTask]: Connection with EPiServer is working for: ' . $this->domain, 'scheduler', 0);    
+                }   
+                else {
+                    // Logging a successful test to EPiServer 
+                    t3lib_div::devLog('[tx_mnepiserver2typo3_ImportDataTask]: Connection with EPiServer for: ' . $this->domain . ' failed.', 'scheduler', 2);
+                } 
+            }
+            catch (Exception $e) {
+                $success = false;
+            }
+          
 		} else {
-				// No email defined, just log the task
-			t3lib_div::devLog('[tx_scheduler_TestTask]: No email address given', 'scheduler', 2);
+            // No config defined, just log the task
+            t3lib_div::devLog('[tx_mnepiserver2typo3_ImportDataTask]: No config is defined', 'scheduler', 2);
 		}
 
 		return $success;
 	}
 
+    /**
+     * Getting the login credentials for the webservice.
+     * 
+     * @return  array  Login credentials
+     */
+    private function getLoginCredentials($credentialUid) {
+        $loginArray = new DatabaseQueries();
+        return $loginArray->getWebserviceCredentials($credentialUid);
+    }
+
 	/**
-	 * This method returns the destination mail address as additional information
+	 * This method returns the destination domain as additional information
 	 *
 	 * @return	string	Information to display
 	 */
 	public function getAdditionalInformation() {
-		return $GLOBALS['LANG']->sL('LLL:EXT:scheduler/mod1/locallang.xml:label.email') . ': ' . $this->email;
+        $databaseQueries = new DatabaseQueries();
+        $domainName = $databaseQueries->getWebserviceCredentials($this->domain);         
+		return $GLOBALS['LANG']->sL('LLL:EXT:mn_episerver2typo3/locallang.xml:label.pagesToImport') . ": " . $domainName["domain"];
 	}
 }
 
