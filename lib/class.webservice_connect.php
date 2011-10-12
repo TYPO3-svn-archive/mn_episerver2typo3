@@ -1,5 +1,7 @@
 <?php
 
+require_once('/nusoap/nusoap.php');
+
 /**
  * The class for connecting to webservice in EPiServer.
  * 
@@ -19,25 +21,72 @@ class WebserviceConnect {
         $this->wsPassword = $wsPassword;
     }
     
+    /**
+     * THe function to connect to the webservice.
+     * 
+     * @return  void
+     */
     private function connectToWebservice() {
-        $this->client = new SoapClient(
-            "http://" . $this->domain . "/WebServices/DataFactoryService.asmx?WSDL", 
-            array(
-                'login' => $this->wsUserName,
-                'password' => $this->wsPassword
-            )
-        );
+        $this->client = new nusoap_client("http://" . $this->domain . "/WebServices/DataFactoryService.asmx?WSDL", 'wsdl');
+        $this->client->setCredentials($this->wsUserName, $this->wsPassword);
     }
     
+    /**
+     * A function to test the connectivity to the webservice.
+     * 
+     * @return boolean $success  
+     */
     public function testEpiserverConnection() {
-        $success = "";
+        $success = false;
         $this->connectToWebservice();
-        try {
-            $data = $this->client->ping();
-            $success = ($data->PingResult == 1) ? true : false;
-        } catch (SoapFault $fault) {
-            $success = false;
-        } 
+        $result = $this->client->call('Ping');
+        // Check for a fault
+        if ($this->client->fault) {
+        	$success = false;
+        } else {
+        	// Check for errors
+        	$err = $this->client->getError();
+        	if ($err) {
+        		$success = false;
+        	} else {
+                $success = $result["PingResult"];
+        	}
+        }
+        
+        return $success;
+    }
+    
+    
+    /**
+     * WebserviceConnect::getPage()
+     * 
+     * @param integer $pageId
+     * @param integer $workId
+     * @param string $remoteSite
+     * @return
+     */
+    public function getPage($pageId, $workId, $remoteSite) {
+        $success = false;
+        $param = array(
+            'ID' => $pageId, 
+            'WorkID' => $workId, 
+            'RemoteSite' => $remoteSite
+        );
+        $this->connectToWebservice();
+        $result = $this->client->call('GetPage', array('pageLink' => $param), '', '', false, true);
+        // Check for a fault
+        if ($this->client->fault) {
+        	$success = false;
+        } else {
+        	// Check for errors
+        	$err = $this->client->getError();
+        	if ($err) {
+        		$success = false;
+        	} else {
+                $success = $result;
+        	}
+        }
+        
         return $success;
     }
         

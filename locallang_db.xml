@@ -11,6 +11,7 @@
 			<label index="tx_mnepiserver2typo3_episerver.domain">Domain</label>
 			<label index="tx_mnepiserver2typo3_episerver.ws_username">Webservice username</label>
 			<label index="tx_mnepiserver2typo3_episerver.ws_password">Webservice password</label>
+            <label index="tx_mnepiserver2typo3_episerver.episerver_startpage_id">EPiServer startpage id</label>
 		</languageKey>
 		<languageKey index="se" type="array">
 			<label index="pages.tx_mnepiserver2typo3_episerver_id">EPiServer Id</label>
@@ -18,6 +19,7 @@
 			<label index="tx_mnepiserver2typo3_episerver.domain">Domän</label>
 			<label index="tx_mnepiserver2typo3_episerver.ws_username">Webservice användarnamn</label>
 			<label index="tx_mnepiserver2typo3_episerver.ws_password">Webservice lösenord</label>
+            <label index="tx_mnepiserver2typo3_episerver.episerver_startpage_id">EPiServer startside id</label>
 		</languageKey>
 	</data>
 </T3locallang>

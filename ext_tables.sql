@@ -24,6 +24,7 @@ CREATE TABLE tx_mnepiserver2typo3_episerver (
 	domain tinytext,
 	ws_username tinytext,
 	ws_password tinytext,
+    episerver_startpage_id int(11) DEFAULT '0' NOT NULL,
 	
 	PRIMARY KEY (uid),
 	KEY parent (pid)

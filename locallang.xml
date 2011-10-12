@@ -11,6 +11,8 @@
             <label index="importDataTask.name">Import page data/structure from EPiServer</label>
             <label index="importDataTask.description">Import page data/structure from EPiServer</label>
             <label index="label.testedDomain">Domain to test</label>
+            <label index="label.domain">Domain</label>
+            <label index="msg.noDomain">No domain chosen</label>
 		</languageKey>
 		<languageKey index="se" type="array">
             <label index="testConnectionTask.name">Test EPiServer connection</label>
@@ -18,6 +20,8 @@
             <label index="importDataTask.name">Import page data/structure from EPiServer</label>
             <label index="importDataTask.description">Import page data/structure from EPiServer</label>
             <label index="label.testedDomain">Domain to test</label>
+            <label index="label.domain">Domain</label>
+            <label index="msg.noDomain">No domain chosen</label>
 		</languageKey>
 	</data>
 </T3locallang>

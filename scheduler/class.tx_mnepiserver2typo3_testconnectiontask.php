@@ -45,19 +45,29 @@ class tx_mnepiserver2typo3_TestConnectionTask extends tx_scheduler_Task {
 	 * @return	void
 	 */
 	public function execute() {
-		$success = false;
+		$success = false; 
+        $loginCredentials = $this->getLoginCredentials($this->domain);
         
-        $loginCredentials = $this->getLoginCredentials(1);
-        
-		if (!empty($loginCredentials)) {
+		if (!empty($loginCredentials) && !empty($this->domain)) {
             
-            $this->domain = $loginCredentials["domain"];
-            $webserviceObject = new WebserviceConnect($this->domain, $loginCredentials["ws_username"], $loginCredentials["ws_password"]);
-            
-            $success = $webserviceObject->testEpiserverConnection();
-  
-            // Logging a successful test to EPiServer 
-			t3lib_div::devLog('[tx_mnepiserver2typo3_TestConnectionTask]: Connection with EPiServer is working', 'scheduler', 0);
+            try {
+                $this->domain = $loginCredentials["domain"];
+                $webserviceObject = new WebserviceConnect($this->domain, $loginCredentials["ws_username"], $loginCredentials["ws_password"]);
+                
+                $success = $webserviceObject->testEpiserverConnection();
+                
+                if($success == true) {
+                    // Logging a successful test to EPiServer 
+                    t3lib_div::devLog('[tx_mnepiserver2typo3_TestConnectionTask]: Connection with EPiServer is working for: ' . $this->domain, 'scheduler', 0);    
+                }   
+                else {
+                    // Logging a successful test to EPiServer 
+                    t3lib_div::devLog('[tx_mnepiserver2typo3_TestConnectionTask]: Connection with EPiServer for: ' . $this->domain . ' failed.', 'scheduler', 2);
+                } 
+            }
+            catch (Exception $e) {
+                $success = false;
+            }
           
 		} else {
             // No config defined, just log the task
@@ -83,7 +93,9 @@ class tx_mnepiserver2typo3_TestConnectionTask extends tx_scheduler_Task {
 	 * @return	string	Information to display
 	 */
 	public function getAdditionalInformation() {
-		return $GLOBALS['LANG']->sL('LLL:EXT:mn_episerver2typo3/locallang.xml:label.testedDomain') . ": " . $this->domain;
+        $databaseQueries = new DatabaseQueries();
+        $domainName = $databaseQueries->getWebserviceCredentials($this->domain);         
+		return $GLOBALS['LANG']->sL('LLL:EXT:mn_episerver2typo3/locallang.xml:label.testedDomain') . ": " . $domainName["domain"];
 	}
 }
 

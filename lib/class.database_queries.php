@@ -12,6 +12,12 @@ class DatabaseQueries {
         
     }
     
+    /**
+     * DatabaseQueries::getWebserviceCredentials()
+     * 
+     * @param integer $credentialUid
+     * @return array $data
+     */
     public function getWebserviceCredentials($credentialUid) {
         $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                 '*',         // SELECT ...

@@ -53,36 +53,39 @@ class tx_mnepiserver2typo3_TestConnectionTask_AdditionalFieldProvider implements
 	public function getAdditionalFields(array &$taskInfo, $task, tx_scheduler_Module $parentObject) {
 
 			// Initialize extra field value
-		if (empty($taskInfo['email'])) {
+		if (empty($taskInfo['domain'])) {
 			if ($parentObject->CMD == 'add') {
-					// In case of new task and if field is empty, set default email address
-				$taskInfo['email'] = $GLOBALS['BE_USER']->user['email'];
+					// In case of new task and if field is empty, set default domain
+				$taskInfo['domain'] = $task->domain;
 
 			} elseif ($parentObject->CMD == 'edit') {
 					// In case of edit, and editing a test task, set to internal value if not data was submitted already
-				$taskInfo['email'] = $task->email;
+				$taskInfo['domain'] = $task->domain;
 			} else {
 					// Otherwise set an empty value, as it will not be used anyway
-				$taskInfo['email'] = '';
+				$taskInfo['domain'] = '';
 			}
 		}
         
 		// Write the code for the field
-		$fieldID = 'task_email';
+		$fieldID = 'task_domain';
         
         $databaseQueries = new DatabaseQueries();
-        $fieldCode = '<select name="tx_scheduler[email]" id="' . $fieldID . '">';
+        $fieldCode = '<select name="tx_scheduler[domain]" id="' . $fieldID . '">';
         foreach($databaseQueries->getAllWebserviceCredentials() as $item) {
-            $fieldCode .= '<option value="' . $item["uid"] . '">' . $item["domain"] . ": " . $item["ws_username"] . "</option>";
+            if($task->domain == $item["uid"]) {
+                $fieldCode .= '<option selected="selected" value="' . $item["uid"] . '">' . $item["domain"] . ": " . $item["ws_username"] . "</option>";
+            }
+            else {
+                $fieldCode .= '<option value="' . $item["uid"] . '">' . $item["domain"] . ": " . $item["ws_username"] . "</option>";    
+            }
         }
         $fieldCode .= '</select>';        
-        
-		//$fieldCode = '<input type="text" name="tx_scheduler[email]" id="' . $fieldID . '" value="' . $taskInfo['email'] . '" size="30" />';
 		$additionalFields = array();
 		$additionalFields[$fieldID] = array(
 			'code'     => $fieldCode,
-			'label'    => 'LLL:EXT:scheduler/mod1/locallang.xml:label.email',
-			'cshKey'   => '_MOD_tools_txschedulerM1',
+			'label'    => 'LLL:EXT:mn_episerver2typo3/mod1/locallang.xml:label.domain',
+			'cshKey'   => '_MOD_tools_txmnepiserver2typo3M1',
 			'cshLabel' => $fieldID
 		);
 
@@ -98,10 +101,10 @@ class tx_mnepiserver2typo3_TestConnectionTask_AdditionalFieldProvider implements
 	 * @return	boolean					True if validation was ok (or selected class is not relevant), false otherwise
 	 */
 	public function validateAdditionalFields(array &$submittedData, tx_scheduler_Module $parentObject) {
-		$submittedData['email'] = trim($submittedData['email']);
+		$submittedData['domain'] = trim($submittedData['domain']);
 
-		if (empty($submittedData['email'])) {
-			$parentObject->addMessage($GLOBALS['LANG']->sL('LLL:EXT:scheduler/mod1/locallang.xml:msg.noEmail'), t3lib_FlashMessage::ERROR);
+		if (empty($submittedData['domain'])) {
+			$parentObject->addMessage($GLOBALS['LANG']->sL('LLL:EXT:mn_episerver2typo3/mod1/locallang.xml:msg.noDomain'), t3lib_FlashMessage::ERROR);
 			$result = false;
 		} else {
 			$result = true;
@@ -119,7 +122,7 @@ class tx_mnepiserver2typo3_TestConnectionTask_AdditionalFieldProvider implements
 	 * @return	void
 	 */
 	public function saveAdditionalFields(array $submittedData, tx_scheduler_Task $task) {
-		$task->email = $submittedData['email'];
+		$task->domain = $submittedData['domain'];
 	}
 }
 
