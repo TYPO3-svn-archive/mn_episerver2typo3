@@ -63,7 +63,7 @@ class DatabaseQueries {
      */
     public function insertPageData($pageArray) {
         $insertArray = array(
-            'pid' => 1,//$pageArray["pid"],
+            'pid' => $pageArray["pid"],
             'title' => $pageArray["PageName"],
             'tx_mnepiserver2typo3_episerver_id' => $pageArray["PageLink"],
             'tstamp' => mktime(),

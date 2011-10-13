@@ -59,11 +59,23 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                 $this->domain = $loginCredentials["domain"];
                 $webserviceObject = new WebserviceConnect($this->domain, $loginCredentials["ws_username"], $loginCredentials["ws_password"]);
                 
+                $startPage = $webserviceObject->getPage($loginCredentials["episerver_startpage_id"], 0, "http://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
                 $firstLevel = $webserviceObject->getChildren($loginCredentials["episerver_startpage_id"], 0, "http://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
                 
                 $pageData = array();
+                //Get the startpage of the structure and generate a PageDataArray
+                $startPageArray = $this->generatePageDataArray($startPage["GetPageResult"]["Property"]["RawProperty"], $loginCredentials["t3_root_page_id"]);
+                $pageData[$startPageArray["PageLink"]] = $startPageArray;
+                //Then insert starpage into the database
+                $insertPage = new DatabaseQueries();
+                foreach($pageData as $page) {
+                    $startPageId = $insertPage->insertPageData($page);
+                }
+                
+                $pageData = array();
                 //Check if the result is an array
-                /*if(is_array($firstLevel["GetChildrenResult"])) {
+                if(is_array($firstLevel["GetChildrenResult"])) {
+                    //Iterate the first level of pages
                     foreach($firstLevel["GetChildrenResult"]["RawPage"] as $pageItem) {
                         $tempData = array();
                         $pageId = 0;
@@ -72,13 +84,17 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                             if($pageProperties["Name"] == "PageLink") {
                                 $pageId = $pageProperties["Value"];
                             }
-                            
                         }
-                        $pageData[$pageId] = $this->generatePageDataArray($tempData);
+                        $pageData[$pageId] = $this->generatePageDataArray($tempData, $startPageId);
                     }    
-                }*/
+                }
                 
-                $pageData = array( array(
+                $insertPage = new DatabaseQueries();
+                foreach($pageData as $page) {
+                    $pageId = $insertPage->insertPageData($page);
+                }
+                
+                /*$pageData = array( array(
                         PageLink => 4,
                         PageParentLink => 3,
                         PageDeleted => "",
@@ -88,15 +104,10 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                         PageMasterLanguageBranch => "en",
                         PageName => "EPiServer page",
                     )
-                );
+                );*/
                 
-                /*print_r($pageData);
-                exit;*/
-                
-                $insertPage = new DatabaseQueries();
-                foreach($pageData as $page) {
-                    $pageId = $insertPage->insertPageData($page);
-                }
+                //print_r($pageData);
+                //exit;
                 
                 $success = true;
                 
@@ -128,14 +139,17 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
      * @param array $data
      * @return array $pageArray
      */
-    private function generatePageDataArray($data) {
+    private function generatePageDataArray($data, $pid) {
         $pageArray = array();
         foreach($data as $tempData) {
+            //Values to use from the EPiServer page webservice
             if($tempData["Name"] == "PageLink" || $tempData["Name"] == "PageParentLink" || $tempData["Name"] == "PageDeleted" 
             || $tempData["Name"] == "PageSaved" || $tempData["Name"] == "PageChanged" || $tempData["Name"] == "PageCreatedBy" 
-            || $tempData["Name"] == "PageMasterLanguageBranch" || $tempData["Name"] == "PageName") {
+            || $tempData["Name"] == "PageMasterLanguageBranch" || $tempData["Name"] == "PageName") {    
                 $pageArray[$tempData["Name"]] = $tempData["Value"];
             }
+            //Set the parent id (pid)
+            $pageArray["pid"] = $pid;
         }
         return $pageArray;
     }
