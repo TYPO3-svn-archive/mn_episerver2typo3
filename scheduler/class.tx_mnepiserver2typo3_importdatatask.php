@@ -177,14 +177,26 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                                         }
                                     }
                                     
-                                                                        
-                                        
+                                                                           
                                 }
                             }
                         }
                         
                     }    
                 }
+                
+                $pageData = array( array(
+                        PageLink => 4,
+                        PageParentLink => 3,
+                        PageDeleted => "",
+                        PageSaved => "09/15/2011 10:47:57",
+                        PageChanged => "08/30/2011 13:32:20",
+                        PageCreatedBy => "",
+                        PageMasterLanguageBranch => "en",
+                        PageName => "EPiServer page",
+                        IsFirstLevel => true
+                    )
+                );
                 
                 /*print_r($pageData);
                 exit;*/

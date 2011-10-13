@@ -18,9 +18,9 @@ $tempColumns = array (
 );
 
 
-t3lib_div::loadTCA('pages');
-t3lib_extMgm::addTCAcolumns('pages',$tempColumns,1);
-t3lib_extMgm::addToAllTCAtypes('pages','tx_mnepiserver2typo3_episerver_id;;;;1-1-1');
+//t3lib_div::loadTCA('pages');
+//t3lib_extMgm::addTCAcolumns('pages',$tempColumns,1);
+//t3lib_extMgm::addToAllTCAtypes('pages','tx_mnepiserver2typo3_episerver_id;;;;1-1-1');
 
 $TCA['tx_mnepiserver2typo3_episerver'] = array (
 	'ctrl' => array (
