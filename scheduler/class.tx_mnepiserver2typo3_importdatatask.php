@@ -42,6 +42,13 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
 	 * @var	string		$domain
 	 */
 	 var $domain = "";
+    
+    /**
+	 * The choice for update pages
+	 *
+	 * @var	string		$update_pages
+	 */
+	 var $update_pages = "";
 
 	/**
 	 * Function executed from the Scheduler.
@@ -71,7 +78,10 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                 foreach($pageData as $page) {
                     $tempPageData = $insertPage->getPageInT3($page["PageLink"]);
                     if($tempPageData["uid"] > 0) {
-                        $insertPage->updatePageData($page);
+                        //Update page if choosen in scheduler
+                        if($this->update_pages == "true") {
+                            $insertPage->updatePageData($page);    
+                        }
                         $startPageId = $tempPageData["uid"];
                     }
                     else {
@@ -80,7 +90,7 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                 }
                 
                 $pageData = array();
-                //Check if the result is an array
+                /** First level data sorting and inserting */
                 if(is_array($firstLevel["GetChildrenResult"])) {
                     //Iterate the first level of pages
                     foreach($firstLevel["GetChildrenResult"]["RawPage"] as $pageItem) {
@@ -91,15 +101,105 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                             if($pageProperties["Name"] == "PageLink") {
                                 $pageId = $pageProperties["Value"];
                             }
+                            //Set that page is first level item
+                            $tempData[] = array("Name" => "IsFirstLevel", "Value" => true);
                         }
                         $pageData[$pageId] = $this->generatePageDataArray($tempData, $startPageId);
+                        
+                        //Second level
+                        $secondLevel = $webserviceObject->getChildren($pageId, 0, "http://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
+                        if(is_array($secondLevel["GetChildrenResult"])) {
+                            foreach($secondLevel["GetChildrenResult"]["RawPage"] as $secondLevelPageItem) {
+                                $secondLevelTempData = array();
+                                $secondLevelPageId = 0;
+                                if(is_array($secondLevelPageItem)) {
+                                    foreach($secondLevelPageItem["Property"]["RawProperty"] as $secondLevelPageProperties) {
+                                        $secondLevelTempData[] = $secondLevelPageProperties;
+                                        if($secondLevelPageProperties["Name"] == "PageLink") {
+                                            $secondLevelPageId = $secondLevelPageProperties["Value"];
+                                        }
+                                    }
+                                    $pageData[$secondLevelPageId] = $this->generatePageDataArray($secondLevelTempData, $pageId);
+                                    
+                                    //Third level
+                                    $thirdLevel = $webserviceObject->getChildren($secondLevelPageId, 0, "http://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
+                                    if(is_array($thirdLevel["GetChildrenResult"])) {
+                                        foreach($thirdLevel["GetChildrenResult"]["RawPage"] as $thirdLevelPageItem) {
+                                            $thirdLevelTempData = array();
+                                            $thirdLevelPageId = 0;
+                                            if(is_array($thirdLevelPageItem)) {
+                                                foreach($thirdLevelPageItem["Property"]["RawProperty"] as $thirdLevelPageProperties) {
+                                                    $thirdLevelTempData[] = $thirdLevelPageProperties;
+                                                    if($thirdLevelPageProperties["Name"] == "PageLink") {
+                                                        $thirdLevelPageId = $thirdLevelPageProperties["Value"];
+                                                    }
+                                                }
+                                                $pageData[$thirdLevelPageId] = $this->generatePageDataArray($thirdLevelTempData, $secondLevelPageId);
+                                                
+                                                //Fourth level
+                                                $fourthLevel = $webserviceObject->getChildren($thirdLevelPageId, 0, "http://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
+                                                if(is_array($fourthLevel["GetChildrenResult"])) {
+                                                    foreach($fourthLevel["GetChildrenResult"]["RawPage"] as $fourthLevelPageItem) {
+                                                        $fourthLevelTempData = array();
+                                                        $fourthLevelPageId = 0;
+                                                        if(is_array($fourthLevelPageItem)) {
+                                                            foreach($fourthLevelPageItem["Property"]["RawProperty"] as $fourthLevelPageProperties) {
+                                                                $fourthLevelTempData[] = $fourthLevelPageProperties;
+                                                                if($fourthLevelPageProperties["Name"] == "PageLink") {
+                                                                    $fourthLevelPageId = $fourthLevelPageProperties["Value"];
+                                                                }
+                                                            }
+                                                            $pageData[$fourthLevelPageId] = $this->generatePageDataArray($fourthLevelTempData, $thirdLevelPageId);
+                                                            
+                                                            //Fifth level
+                                                            $fifthLevel = $webserviceObject->getChildren($fourthLevelPageId, 0, "http://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
+                                                            if(is_array($fifthLevel["GetChildrenResult"])) {
+                                                                foreach($fifthLevel["GetChildrenResult"]["RawPage"] as $fifthLevelPageItem) {
+                                                                    $fifthLevelTempData = array();
+                                                                    $fifthLevelPageId = 0;
+                                                                    if(is_array($fifthLevelPageItem)) {
+                                                                        foreach($fifthLevelPageItem["Property"]["RawProperty"] as $fifthLevelPageProperties) {
+                                                                            $fifthLevelTempData[] = $fifthLevelPageProperties;
+                                                                            if($fifthLevelPageProperties["Name"] == "PageLink") {
+                                                                                $fifthLevelPageId = $fifthLevelPageProperties["Value"];
+                                                                            }
+                                                                        }
+                                                                        $pageData[$fifthLevelPageId] = $this->generatePageDataArray($fifthLevelTempData, $fourthLevelPageId);    
+                                                                    }
+                                                                }
+                                                            }
+                                                                
+                                                        }
+                                                    }
+                                                }
+                                                    
+                                            }
+                                        }
+                                    }
+                                    
+                                                                        
+                                        
+                                }
+                            }
+                        }
+                        
                     }    
                 }
-
+                
+                /*print_r($pageData);
+                exit;*/
+                
                 foreach($pageData as $page) {
                     $tempPageData = $insertPage->getPageInT3($page["PageLink"]);
+                    if(!$page["IsFirstLevel"]) {
+                        $parentUidInDatabaseArray = $insertPage->getPageInT3($page["PageParentLink"]);
+                        $page["pid"] = $parentUidInDatabaseArray["uid"]; 
+                    }
                     if($tempPageData["uid"] > 0) {
-                        $insertPage->updatePageData($page);
+                        //Update page if choosen in scheduler
+                        if($this->update_pages == "true") {
+                            $insertPage->updatePageData($page);
+                        }
                         $pageId = $tempPageData["uid"];
                     }
                     else {
@@ -158,7 +258,7 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
             //Values to use from the EPiServer page webservice
             if($tempData["Name"] == "PageLink" || $tempData["Name"] == "PageParentLink" || $tempData["Name"] == "PageDeleted" 
             || $tempData["Name"] == "PageSaved" || $tempData["Name"] == "PageChanged" || $tempData["Name"] == "PageCreatedBy" 
-            || $tempData["Name"] == "PageMasterLanguageBranch" || $tempData["Name"] == "PageName") {    
+            || $tempData["Name"] == "PageMasterLanguageBranch" || $tempData["Name"] == "PageName" || $tempData["Name"] == "IsFirstLevel") {    
                 $pageArray[$tempData["Name"]] = $tempData["Value"];
             }
             //Set the parent id (pid)

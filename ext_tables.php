@@ -43,9 +43,9 @@ $TCA['tx_mnepiserver2typo3_episerver'] = array (
 );
 
 
-if (TYPO3_MODE == 'BE') {
+/*if (TYPO3_MODE == 'BE') {
 	t3lib_extMgm::addModulePath('web_txmnepiserver2typo3M1', t3lib_extMgm::extPath($_EXTKEY) . 'mod1/');
 		
 	t3lib_extMgm::addModule('web', 'txmnepiserver2typo3M1', '', t3lib_extMgm::extPath($_EXTKEY) . 'mod1/');
-}
+}*/
 ?>

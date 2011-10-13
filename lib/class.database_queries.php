@@ -62,25 +62,25 @@ class DatabaseQueries {
      * @return integer $lastInsertId
      */
     public function insertPageData($pageArray) {
-        $insertArray = array(
-            'pid' => $pageArray["pid"],
-            'title' => $pageArray["PageName"],
-            'tx_mnepiserver2typo3_episerver_id' => $pageArray["PageLink"],
-            'tstamp' => mktime(),
-            'crdate' => mktime(),   
-            'urltype' => 1,
-            'doktype' => 1,
-            'cruser_id' => 1,
-            'sorting' => 512,    
-            /*'t3ver_label' => '',
-            'perms_userid' => 1,
-            'perms_groupid' => 5,
-            'perms_user' =>	31,
-            'perms_group' => 27,   */  
-        );
-        $res = $GLOBALS['TYPO3_DB']->exec_INSERTquery('pages', $insertArray);
-        $lastInsertId = mysql_insert_id();
-        return $lastInsertId;
+        if($pageArray["PageName"] != "") {
+            $insertArray = array(
+                'pid' => $pageArray["pid"],
+                'title' => $pageArray["PageName"],
+                'tx_mnepiserver2typo3_episerver_id' => $pageArray["PageLink"],
+                'tstamp' => mktime(),
+                'crdate' => mktime(),   
+                'urltype' => 1,
+                'doktype' => 1,
+                'cruser_id' => 1,
+                'sorting' => 0,
+            );
+            $res = $GLOBALS['TYPO3_DB']->exec_INSERTquery('pages', $insertArray);
+            $lastInsertId = mysql_insert_id();
+            return $lastInsertId;    
+        }
+        else {
+            return 0;    
+        }
     }
     
     /**
@@ -98,12 +98,7 @@ class DatabaseQueries {
             'urltype' => 1,
             'doktype' => 1,
             'cruser_id' => 1,
-            'sorting' => 512,    
-            /*'t3ver_label' => '',
-            'perms_userid' => 1,
-            'perms_groupid' => 5,
-            'perms_user' =>	31,
-            'perms_group' => 27,   */  
+            'sorting' => 0,
         );
         $res = $GLOBALS['TYPO3_DB']->exec_UPDATEquery('pages', 'tx_mnepiserver2typo3_episerver_id=' . $pageArray["PageLink"], $updateArray);
         return $res;
