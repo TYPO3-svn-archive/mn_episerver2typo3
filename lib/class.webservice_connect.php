@@ -123,6 +123,41 @@ class WebserviceConnect {
         
         return $success;
     }
+    
+    /**
+     * WebserviceConnect::getPage()
+     * Get the  default page information.
+     * 
+     * @param integer $pageId
+     * @param integer $workId
+     * @param string $remoteSite
+     * @param integer $pageTypeId
+     * @return array/boolean $success
+     */
+    public function getDefaultPageData($pageId, $workId, $remoteSite, $pageTypeId) {
+        $success = false;
+        $param = array(
+            'ID' => $pageId, 
+            'WorkID' => $workId, 
+            'RemoteSite' => $remoteSite
+        );
+        $this->connectToWebservice();
+        $result = $this->client->call('GetDefaultPageData', array('pageLink' => $param, 'pageTypeID' => $pageTypeId), '', '', false, true);
+        // Check for a fault
+        if ($this->client->fault) {
+        	$success = false;
+        } else {
+        	// Check for errors
+        	$err = $this->client->getError();
+        	if ($err) {
+        		$success = false;
+        	} else {
+                $success = $result;
+        	}
+        }
+        
+        return $success;
+    }
         
 }
 

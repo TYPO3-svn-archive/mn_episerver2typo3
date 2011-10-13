@@ -69,7 +69,14 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                 //Then insert starpage into the database
                 $insertPage = new DatabaseQueries();
                 foreach($pageData as $page) {
-                    $startPageId = $insertPage->insertPageData($page);
+                    $tempPageData = $insertPage->getPageInT3($page["PageLink"]);
+                    if($tempPageData["uid"] > 0) {
+                        $insertPage->updatePageData($page);
+                        $startPageId = $tempPageData["uid"];
+                    }
+                    else {
+                        $startPageId = $insertPage->insertPageData($page);    
+                    }
                 }
                 
                 $pageData = array();
@@ -88,10 +95,16 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                         $pageData[$pageId] = $this->generatePageDataArray($tempData, $startPageId);
                     }    
                 }
-                
-                $insertPage = new DatabaseQueries();
+
                 foreach($pageData as $page) {
-                    $pageId = $insertPage->insertPageData($page);
+                    $tempPageData = $insertPage->getPageInT3($page["PageLink"]);
+                    if($tempPageData["uid"] > 0) {
+                        $insertPage->updatePageData($page);
+                        $pageId = $tempPageData["uid"];
+                    }
+                    else {
+                        $pageId = $insertPage->insertPageData($page);    
+                    }
                 }
                 
                 /*$pageData = array( array(
