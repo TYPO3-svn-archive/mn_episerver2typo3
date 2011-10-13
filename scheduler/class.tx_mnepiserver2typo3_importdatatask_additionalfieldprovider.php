@@ -53,17 +53,20 @@ class tx_mnepiserver2typo3_ImportDataTask_AdditionalFieldProvider implements tx_
 	public function getAdditionalFields(array &$taskInfo, $task, tx_scheduler_Module $parentObject) {
 
 			// Initialize extra field value
-		if (empty($taskInfo['domain'])) {
+		if (empty($taskInfo['domain']) || empty($taskInfo['update_pages'])) {
 			if ($parentObject->CMD == 'add') {
 					// In case of new task and if field is empty, set default domain
 				$taskInfo['domain'] = $task->domain;
+                $taskInfo['update_pages'] = $task->update_pages;
 
 			} elseif ($parentObject->CMD == 'edit') {
 					// In case of edit, and editing a test task, set to internal value if not data was submitted already
 				$taskInfo['domain'] = $task->domain;
+                $taskInfo['update_pages'] = $task->update_pages;
 			} else {
 					// Otherwise set an empty value, as it will not be used anyway
 				$taskInfo['domain'] = '';
+                $taskInfo['update_pages'] = '';
 			}
 		}
         
@@ -89,6 +92,20 @@ class tx_mnepiserver2typo3_ImportDataTask_AdditionalFieldProvider implements tx_
 			'cshLabel' => $fieldID
 		);
 
+        //Checkbox for setting if pages should be updated on new import.
+        $fieldID = 'task_update_pages';
+        $checked = ' ';
+        if($task->update_pages == "true") {
+            $checked = ' checked="checked" ';
+        }
+        $fieldCode = '<input type="checkbox"' . $checked . 'name="tx_scheduler[update_pages]" id="' . $fieldID . '" value="true" />';
+        $additionalFields[$fieldID] = array(
+			'code'     => $fieldCode,
+			'label'    => 'LLL:EXT:mn_episerver2typo3/locallang.xml:label.update_pages',
+			'cshKey'   => '_MOD_tools_txmnepiserver2typo3M1',
+			'cshLabel' => $fieldID
+		);
+    
 		return $additionalFields;
 	}
 
@@ -123,6 +140,7 @@ class tx_mnepiserver2typo3_ImportDataTask_AdditionalFieldProvider implements tx_
 	 */
 	public function saveAdditionalFields(array $submittedData, tx_scheduler_Task $task) {
 		$task->domain = $submittedData['domain'];
+        $task->update_pages = $submittedData['update_pages'];
 	}
 }
 

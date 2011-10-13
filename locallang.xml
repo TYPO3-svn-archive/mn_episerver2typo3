@@ -12,6 +12,7 @@
             <label index="importDataTask.description">Import page data/structure from EPiServer</label>
             <label index="label.testedDomain">Domain to test</label>
             <label index="label.domain">Domain</label>
+            <label index="label.update_pages">Update already imported pages on new import</label>
             <label index="label.pagesToImport">Pages to import from</label>
             <label index="msg.noDomain">No domain chosen</label>
 		</languageKey>
@@ -22,6 +23,7 @@
             <label index="importDataTask.description">Import page data/structure from EPiServer</label>
             <label index="label.testedDomain">Domain to test</label>
             <label index="label.domain">Domain</label>
+            <label index="label.update_pages">Update already imported pages on new import</label>
             <label index="label.pagesToImport">Pages to import from</label>
             <label index="msg.noDomain">No domain chosen</label>
 		</languageKey>

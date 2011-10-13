@@ -22,7 +22,8 @@ class WebserviceConnect {
     }
     
     /**
-     * THe function to connect to the webservice.
+     * WebserviceConnect::connectToWebservice()
+     * The function to connect to the webservice.
      * 
      * @return  void
      */
@@ -32,6 +33,7 @@ class WebserviceConnect {
     }
     
     /**
+     * WebserviceConnect::testEpiserverConnection()
      * A function to test the connectivity to the webservice.
      * 
      * @return boolean $success  
