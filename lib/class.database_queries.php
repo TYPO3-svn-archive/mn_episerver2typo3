@@ -150,24 +150,25 @@ class DatabaseQueries {
         return $pageExist;
     }
     
-    public function insertPageContent($pageContentArray, $pid) {
+    /**
+     * DatabaseQueries::insertPageContent()
+     * Insert the content for a page.
+     * 
+     * @param array $pageArray
+     * @param integer $pid
+     * @return integer $lastInsertId
+     */
+    public function insertPageContent($pageArray, $pid) {
         if($pageArray["PageName"] != "") {
             $insertArray = array(
                 'pid' => $pid,
-                'header' => '',
-                'bodytext' => '',
-                'CType' => '',
+                'header' => $pageArray["PageName"],
+                'bodytext' => $pageArray["MainBody"],
+                'tx_mnepiserver2typo3_episerver_id' => $pageArray["PageLink"],
+                'CType' => 'text',
                 'colPos' => 0,
                 'tstamp' => mktime(),
                 'crdate' => mktime(),   
-                /*'title' => $pageArray["PageName"],
-                'tx_mnepiserver2typo3_episerver_id' => $pageArray["PageLink"],
-                'tstamp' => mktime(),
-                'crdate' => mktime(),   
-                'urltype' => 1,
-                'doktype' => 1,
-                'cruser_id' => 1,
-                'sorting' => 0,*/
             );
             $res = $GLOBALS['TYPO3_DB']->exec_INSERTquery('tt_content', $insertArray);
             $lastInsertId = mysql_insert_id();
@@ -176,6 +177,28 @@ class DatabaseQueries {
         else {
             return 0;    
         }
+    }
+    
+    /**
+     * DatabaseQueries::updatePageContent()
+     * Update the content for a page.
+     * 
+     * @param array $pageArray
+     * @param integer $pid
+     * @return void
+     */
+    public function updatePageContent($pageArray, $pid) {
+        $updateArray = array(
+            'pid' => $pid,
+            'header' => $pageArray["PageName"],
+            'bodytext' => $pageArray["MainBody"],
+            'CType' => 'text',
+            'colPos' => 0,
+            'tstamp' => mktime(),
+            'crdate' => mktime(),
+        );
+        $res = $GLOBALS['TYPO3_DB']->exec_UPDATEquery('tt_content', 'tx_mnepiserver2typo3_episerver_id=' . $pageArray["PageLink"], $updateArray);
+        return $res;
     }
     
 }

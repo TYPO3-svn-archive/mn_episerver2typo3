@@ -80,12 +80,14 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                     if($tempPageData["uid"] > 0) {
                         //Update page if choosen in scheduler
                         if($this->update_pages == "true") {
-                            $insertPage->updatePageData($page);    
+                            $insertPage->updatePageData($page);   
+                            $insertPage->updatePageContent($page, $tempPageData["uid"]); 
                         }
                         $startPageId = $tempPageData["uid"];
                     }
                     else {
                         $startPageId = $insertPage->insertPageData($page);    
+                        $insertPage->insertPageContent($page, $startPageId);
                     }
                 }
                 
@@ -164,7 +166,26 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                                                                                 $fifthLevelPageId = $fifthLevelPageProperties["Value"];
                                                                             }
                                                                         }
-                                                                        $pageData[$fifthLevelPageId] = $this->generatePageDataArray($fifthLevelTempData, $fourthLevelPageId);    
+                                                                        $pageData[$fifthLevelPageId] = $this->generatePageDataArray($fifthLevelTempData, $fourthLevelPageId);
+                                                                        
+                                                                        //Sixth level
+                                                                        $sixthLevel = $webserviceObject->getChildren($fifthLevelPageId, 0, "http://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
+                                                                        if(is_array($sixthLevel["GetChildrenResult"])) {
+                                                                            foreach($sixthLevel["GetChildrenResult"]["RawPage"] as $sixthLevelPageItem) {
+                                                                                $sixthLevelTempData = array();
+                                                                                $sixthLevelPageId = 0;
+                                                                                if(is_array($sixthLevelPageItem)) {
+                                                                                    foreach($sixthLevelPageItem["Property"]["RawProperty"] as $sixthLevelPageProperties) {
+                                                                                        $sixthLevelTempData[] = $sixthLevelPageProperties;
+                                                                                        if($sixthLevelPageProperties["Name"] == "PageLink") {
+                                                                                            $sixthLevelPageId = $sixthLevelPageProperties["Value"];
+                                                                                        }
+                                                                                    }
+                                                                                    $pageData[$sixthLevelPageId] = $this->generatePageDataArray($sixthLevelTempData, $fifthLevelPageId);    
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                            
                                                                     }
                                                                 }
                                                             }
@@ -211,11 +232,13 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                         //Update page if choosen in scheduler
                         if($this->update_pages == "true") {
                             $insertPage->updatePageData($page);
+                            $insertPage->updatePageContent($page, $tempPageData["uid"]);
                         }
                         $pageId = $tempPageData["uid"];
                     }
                     else {
                         $pageId = $insertPage->insertPageData($page);    
+                        $insertPage->insertPageContent($page, $pageId);
                     }
                 }
                 
@@ -257,7 +280,7 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
             if($tempData["Name"] == "PageLink" || $tempData["Name"] == "PageParentLink" || $tempData["Name"] == "PageDeleted" 
             || $tempData["Name"] == "PageSaved" || $tempData["Name"] == "PageChanged" || $tempData["Name"] == "PageCreatedBy" 
             || $tempData["Name"] == "PageMasterLanguageBranch" || $tempData["Name"] == "PageName" 
-            || $tempData["Name"] == "PageVisibleInMenu" || $tempData["Name"] == "IsFirstLevel") {    
+            || $tempData["Name"] == "PageVisibleInMenu" || $tempData["Name"] == "MainBody" || $tempData["Name"] == "IsFirstLevel") {    
                 $pageArray[$tempData["Name"]] = $tempData["Value"];
             }
             //Set the parent id (pid)
