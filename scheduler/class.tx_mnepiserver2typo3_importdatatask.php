@@ -280,7 +280,8 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
             if($tempData["Name"] == "PageLink" || $tempData["Name"] == "PageParentLink" || $tempData["Name"] == "PageDeleted" 
             || $tempData["Name"] == "PageSaved" || $tempData["Name"] == "PageChanged" || $tempData["Name"] == "PageCreatedBy" 
             || $tempData["Name"] == "PageMasterLanguageBranch" || $tempData["Name"] == "PageName" 
-            || $tempData["Name"] == "PageVisibleInMenu" || $tempData["Name"] == "MainBody" || $tempData["Name"] == "IsFirstLevel") {    
+            || $tempData["Name"] == "PageVisibleInMenu" || $tempData["Name"] == "MainBody" || $tempData["Name"] == "IsFirstLevel"
+            || $tempData["Name"] == "PageMasterLanguageBranch") {    
                 $pageArray[$tempData["Name"]] = $tempData["Value"];
             }
             //Set the parent id (pid)
