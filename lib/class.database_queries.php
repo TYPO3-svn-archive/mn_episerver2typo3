@@ -71,8 +71,9 @@ class DatabaseQueries {
                 'crdate' => mktime(),   
                 'urltype' => 1,
                 'doktype' => 1,
-                'cruser_id' => 1,
+                //'cruser_id' => 1,
                 'sorting' => 0,
+                'nav_hide' => ($pageArray["PageVisibleInMenu"] == True) ? 0 : 1
             );
             $res = $GLOBALS['TYPO3_DB']->exec_INSERTquery('pages', $insertArray);
             $lastInsertId = mysql_insert_id();
@@ -99,6 +100,7 @@ class DatabaseQueries {
             'doktype' => 1,
             'cruser_id' => 1,
             'sorting' => 0,
+            'nav_hide' => ($pageArray["PageVisibleInMenu"] == True) ? 0 : 1
         );
         $res = $GLOBALS['TYPO3_DB']->exec_UPDATEquery('pages', 'tx_mnepiserver2typo3_episerver_id=' . $pageArray["PageLink"], $updateArray);
         return $res;
@@ -146,6 +148,34 @@ class DatabaseQueries {
             }
         }
         return $pageExist;
+    }
+    
+    public function insertPageContent($pageContentArray, $pid) {
+        if($pageArray["PageName"] != "") {
+            $insertArray = array(
+                'pid' => $pid,
+                'header' => '',
+                'bodytext' => '',
+                'CType' => '',
+                'colPos' => 0,
+                'tstamp' => mktime(),
+                'crdate' => mktime(),   
+                /*'title' => $pageArray["PageName"],
+                'tx_mnepiserver2typo3_episerver_id' => $pageArray["PageLink"],
+                'tstamp' => mktime(),
+                'crdate' => mktime(),   
+                'urltype' => 1,
+                'doktype' => 1,
+                'cruser_id' => 1,
+                'sorting' => 0,*/
+            );
+            $res = $GLOBALS['TYPO3_DB']->exec_INSERTquery('tt_content', $insertArray);
+            $lastInsertId = mysql_insert_id();
+            return $lastInsertId;    
+        }
+        else {
+            return 0;    
+        }
     }
     
 }

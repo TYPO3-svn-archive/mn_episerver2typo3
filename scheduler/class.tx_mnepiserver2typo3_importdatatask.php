@@ -185,7 +185,7 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                     }    
                 }
                 
-                $pageData = array( array(
+                /*$pageData = array( array(
                         PageLink => 4,
                         PageParentLink => 3,
                         PageDeleted => "",
@@ -196,7 +196,7 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                         PageName => "EPiServer page",
                         IsFirstLevel => true
                     )
-                );
+                );*/
                 
                 /*print_r($pageData);
                 exit;*/
@@ -219,21 +219,7 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                     }
                 }
                 
-                /*$pageData = array( array(
-                        PageLink => 4,
-                        PageParentLink => 3,
-                        PageDeleted => "",
-                        PageSaved => "09/15/2011 10:47:57",
-                        PageChanged => "08/30/2011 13:32:20",
-                        PageCreatedBy => "",
-                        PageMasterLanguageBranch => "en",
-                        PageName => "EPiServer page",
-                    )
-                );*/
-                
-                //print_r($pageData);
-                //exit;
-                
+                //Successful import
                 $success = true;
                 
                 if($success == true) {
@@ -270,7 +256,8 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
             //Values to use from the EPiServer page webservice
             if($tempData["Name"] == "PageLink" || $tempData["Name"] == "PageParentLink" || $tempData["Name"] == "PageDeleted" 
             || $tempData["Name"] == "PageSaved" || $tempData["Name"] == "PageChanged" || $tempData["Name"] == "PageCreatedBy" 
-            || $tempData["Name"] == "PageMasterLanguageBranch" || $tempData["Name"] == "PageName" || $tempData["Name"] == "IsFirstLevel") {    
+            || $tempData["Name"] == "PageMasterLanguageBranch" || $tempData["Name"] == "PageName" 
+            || $tempData["Name"] == "PageVisibleInMenu" || $tempData["Name"] == "IsFirstLevel") {    
                 $pageArray[$tempData["Name"]] = $tempData["Value"];
             }
             //Set the parent id (pid)
