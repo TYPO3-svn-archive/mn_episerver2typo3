@@ -201,6 +201,17 @@ class DatabaseQueries {
         return $res;
     }
     
+    /**
+     * DatabaseQueries::deleteImportedPagesAndContent()
+     * Delete all imported pages and page content.
+     * 
+     * @return void
+     */
+    public function deleteImportedPagesAndContent() {
+        $GLOBALS['TYPO3_DB']->exec_DELETEquery('pages', 'tx_mnepiserver2typo3_episerver_id != 0');
+        $GLOBALS['TYPO3_DB']->exec_DELETEquery('tt_content', 'tx_mnepiserver2typo3_episerver_id != 0');
+    }
+    
 }
 
 ?>

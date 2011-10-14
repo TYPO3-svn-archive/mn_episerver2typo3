@@ -66,7 +66,7 @@ class tx_mnepiserver2typo3_TestConnectionTask extends tx_scheduler_Task {
                     t3lib_div::devLog('[tx_mnepiserver2typo3_TestConnectionTask]: Connection with EPiServer is working for: ' . $this->domain, 'scheduler', 0);    
                 }   
                 else {
-                    // Logging a successful test to EPiServer 
+                    // Logging an unsuccessful test to EPiServer 
                     t3lib_div::devLog('[tx_mnepiserver2typo3_TestConnectionTask]: Connection with EPiServer for: ' . $this->domain . ' failed.', 'scheduler', 2);
                 } 
             }

@@ -206,7 +206,7 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                     }    
                 }
                 
-                /*$pageData = array( array(
+                $pageData = array( 4 => array(
                         PageLink => 4,
                         PageParentLink => 3,
                         PageDeleted => "",
@@ -215,9 +215,12 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                         PageCreatedBy => "",
                         PageMasterLanguageBranch => "en",
                         PageName => "EPiServer page",
-                        IsFirstLevel => true
+                        IsFirstLevel => true,
+                        PageVisibleInMenu => true,
+                        MainBody => "<p>Lorem ipsum testar lite nytt innehåll</p>",
+                        pid => 1
                     )
-                );*/
+                );
                 
                 /*print_r($pageData);
                 exit;*/

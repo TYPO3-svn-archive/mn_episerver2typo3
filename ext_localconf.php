@@ -19,4 +19,10 @@ if (!defined ('TYPO3_MODE')) {
         'additionalFields' => 'tx_mnepiserver2typo3_ImportDataTask_AdditionalFieldProvider'
 	);
 	
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['tx_mnepiserver2typo3_DeleteDataTask'] = array(
+		'extension'        => $_EXTKEY,
+		'title'            => 'LLL:EXT:' . $_EXTKEY . '/locallang.xml:deleteDataTask.name',
+		'description'      => 'LLL:EXT:' . $_EXTKEY . '/locallang.xml:deleteDataTask.description',
+	);
+    
 ?>
