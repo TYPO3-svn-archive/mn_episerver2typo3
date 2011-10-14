@@ -287,6 +287,7 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
             //Set the parent id (pid)
             $pageArray["pid"] = $pid;
         }
+        
         return $pageArray;
     }
 
