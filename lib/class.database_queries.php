@@ -66,6 +66,7 @@ class DatabaseQueries {
             $insertArray = array(
                 'pid' => $pageArray["pid"],
                 'title' => $pageArray["PageName"],
+                'nav_title' => $pageArray["PageName"],
                 'tx_mnepiserver2typo3_episerver_id' => $pageArray["PageLink"],
                 'tstamp' => mktime(),
                 'crdate' => mktime(),   
@@ -95,6 +96,7 @@ class DatabaseQueries {
         $updateArray = array(
             'pid' => $pageArray["pid"],
             'title' => $pageArray["PageName"],
+            'nav_title' => $pageArray["PageName"],
             'tstamp' => mktime(),   
             'urltype' => 1,
             'doktype' => 1,
@@ -212,6 +214,43 @@ class DatabaseQueries {
         $GLOBALS['TYPO3_DB']->exec_DELETEquery('tt_content', 'tx_mnepiserver2typo3_episerver_id != 0');
     }
     
+    public function getSystemLanguages() {
+        $languages = false;
+        $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+            '*', 
+            'sys_language', 
+            ''
+        );
+        while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+            $languages = true;        
+        }
+        return $languages;
+    }
+    
+    public function createLanugageSpecificPage($pageData, $originalPid, $sysLanguageUid) {
+        if($pageArray["PageName"] != "") {
+            $insertArray = array(
+                'pid' => $originalPid,
+                'title' => $pageArray["PageName"],
+                'nav_title' => $pageArray["PageName"],
+                'tx_mnepiserver2typo3_episerver_id' => $pageArray["PageLink"],
+                'tstamp' => mktime(),
+                'crdate' => mktime(),   
+                'urltype' => 1,
+                'doktype' => 1,
+                //'cruser_id' => 1,
+                'sorting' => 0,
+                'sys_language_uid' => $sysLanguageUid
+            );
+            $res = $GLOBALS['TYPO3_DB']->exec_INSERTquery('pages_language_overlay', $insertArray);
+            $lastInsertId = mysql_insert_id();
+            return $lastInsertId;    
+        }
+        else {
+            return 0;    
+        }
+    }
+        
 }
 
 ?>
