@@ -160,6 +160,49 @@ class WebserviceConnect {
         
         return $success;
     }
+     
+    /**
+     * WebserviceConnect::getLanguageBranches()
+     * Get page languages from EPiServer.
+     * 
+     * @param integer $pageId
+     * @param integer $workId
+     * @param string $remoteSite
+     * @return array/boolean $success
+     */
+    public function getLanguageBranches($pageId, $workId, $remoteSite) {
+        $success = false;
+        $param = array(
+            'ID' => $pageId, 
+            'WorkID' => $workId, 
+            'RemoteSite' => $remoteSite
+        );
+        $this->connectToWebservice();
+        $result = $this->client->call('GetLanguageBranches', array('pageLink' => $param), '', '', false, true);
+        // Check for a fault
+        if ($this->client->fault) {
+        	$success = false;
+        } else {
+        	// Check for errors
+        	$err = $this->client->getError();
+        	if ($err) {
+        		$success = false;
+        	} else {
+                $tempArray = array();
+                foreach($result["GetLanguageBranchesResult"]["RawPage"] as $languageArray) {
+                    foreach($languageArray["Property"]["RawProperty"] as $languageProperty) {
+                        if($languageProperty["Name"] == "PageLanguageBranch") {
+                            $tempArray[] = $languageProperty["Value"];
+                        }
+                    }
+                }
+                $success = $tempArray;
+        	}
+        }
+        
+        
+        return $success;
+    }
         
 }
 

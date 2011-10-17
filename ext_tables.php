@@ -2,20 +2,6 @@
 if (!defined('TYPO3_MODE')) {
 	die ('Access denied.');
 }
-/*$tempColumns = array (
-	'tx_mnepiserver2typo3_episerver_id' => array (		
-		'exclude' => 0,		
-		'label' => 'LLL:EXT:mn_episerver2typo3/locallang_db.xml:pages.tx_mnepiserver2typo3_episerver_id',		
-		'config' => array (
-			'type'     => 'input',
-			'size'     => '4',
-			'max'      => '4',
-			'eval'     => 'int',
-			'checkbox' => '0',
-			'default' => 0
-		)
-	),
-);*/
 
 $TCA['tx_mnepiserver2typo3_episerver'] = array (
 	'ctrl' => array (
