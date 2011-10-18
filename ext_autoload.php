@@ -11,5 +11,6 @@ return array(
 	'tx_mnepiserver2typo3_importdatatask' => $extensionPath . 'scheduler/class.tx_mnepiserver2typo3_importdatatask.php',
     'tx_mnepiserver2typo3_importdatatask_additionalfieldprovider' => $extensionPath . 'scheduler/class.tx_mnepiserver2typo3_importdatatask_additionalfieldprovider.php',
     'tx_mnepiserver2typo3_deletedatatask' => $extensionPath . 'scheduler/class.tx_mnepiserver2typo3_deletedatatask.php',
+    'tx_mnepiserver2typo3_deletedatatask_additionalfieldprovider' => $extensionPath . 'scheduler/class.tx_mnepiserver2typo3_deletedatatask_additionalfieldprovider.php',
 );
 ?>

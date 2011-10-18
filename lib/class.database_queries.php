@@ -68,13 +68,14 @@ class DatabaseQueries {
                 'title' => $pageArray["PageName"],
                 'nav_title' => $pageArray["PageName"],
                 'tx_mnepiserver2typo3_episerver_id' => $pageArray["PageLink"],
+                'tx_mnepiserver2typo3_episerver_site_id' => $pageArray["EpiserverSiteId"],
                 'tstamp' => mktime(),
                 'crdate' => mktime(),   
                 'urltype' => 1,
                 'doktype' => 1,
                 //'cruser_id' => 1,
                 'sorting' => 0,
-                'nav_hide' => ($pageArray["PageVisibleInMenu"] == True) ? 0 : 1
+                'nav_hide' => ($pageArray["PageVisibleInMenu"] == True) ? 0 : 1,
             );
             $res = $GLOBALS['TYPO3_DB']->exec_INSERTquery('pages', $insertArray);
             $lastInsertId = mysql_insert_id();
@@ -167,6 +168,7 @@ class DatabaseQueries {
                 'header' => $pageArray["PageName"],
                 'bodytext' => $pageArray["MainBody"],
                 'tx_mnepiserver2typo3_episerver_id' => $pageArray["PageLink"],
+                'tx_mnepiserver2typo3_episerver_site_id' => $pageArray["EpiserverSiteId"],
                 'CType' => 'text',
                 'colPos' => 0,
                 'tstamp' => mktime(),
@@ -209,9 +211,9 @@ class DatabaseQueries {
      * 
      * @return void
      */
-    public function deleteImportedPagesAndContent() {
-        $GLOBALS['TYPO3_DB']->exec_DELETEquery('pages', 'tx_mnepiserver2typo3_episerver_id != 0');
-        $GLOBALS['TYPO3_DB']->exec_DELETEquery('tt_content', 'tx_mnepiserver2typo3_episerver_id != 0');
+    public function deleteImportedPagesAndContent($episerverSiteId) {
+        $GLOBALS['TYPO3_DB']->exec_DELETEquery('pages', 'tx_mnepiserver2typo3_episerver_id != 0 AND tx_mnepiserver2typo3_episerver_site_id = ' . $episerverSiteId);
+        $GLOBALS['TYPO3_DB']->exec_DELETEquery('tt_content', 'tx_mnepiserver2typo3_episerver_id != 0 AND tx_mnepiserver2typo3_episerver_site_id = ' . $episerverSiteId);
     }
     
     public function getSystemLanguages() {
@@ -227,6 +229,15 @@ class DatabaseQueries {
         return $languages;
     }
     
+    /**
+     * DatabaseQueries::createLanugageSpecificPage()
+     * Create a language specific page.
+     * 
+     * @param array $pageData
+     * @param integer $originalPid
+     * @param integer $sysLanguageUid
+     * @return integer $lastInsertId
+     */
     public function createLanugageSpecificPage($pageData, $originalPid, $sysLanguageUid) {
         if($pageArray["PageName"] != "") {
             $insertArray = array(

@@ -16,6 +16,7 @@
             <label index="label.domain">Domain</label>
             <label index="label.update_pages">Update already imported pages on new import</label>
             <label index="label.pagesToImport">Pages to import from</label>
+            <label index="label.pagesToDelete">Pages to delete from</label>
             <label index="msg.noDomain">No domain chosen</label>
 		</languageKey>
 		<languageKey index="se" type="array">
@@ -29,6 +30,7 @@
             <label index="label.domain">Domain</label>
             <label index="label.update_pages">Update already imported pages on new import</label>
             <label index="label.pagesToImport">Pages to import from</label>
+            <label index="label.pagesToDelete">Pages to delete from</label>
             <label index="msg.noDomain">No domain chosen</label>
 		</languageKey>
 	</data>

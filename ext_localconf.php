@@ -23,6 +23,7 @@ if (!defined ('TYPO3_MODE')) {
 		'extension'        => $_EXTKEY,
 		'title'            => 'LLL:EXT:' . $_EXTKEY . '/locallang.xml:deleteDataTask.name',
 		'description'      => 'LLL:EXT:' . $_EXTKEY . '/locallang.xml:deleteDataTask.description',
+        'additionalFields' => 'tx_mnepiserver2typo3_DeleteDataTask_AdditionalFieldProvider'
 	);
     
 ?>
