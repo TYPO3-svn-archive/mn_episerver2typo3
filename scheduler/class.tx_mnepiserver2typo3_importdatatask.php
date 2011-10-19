@@ -63,6 +63,10 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
 		if (!empty($loginCredentials) && !empty($this->domain)) {
             
             try {
+                
+                $this->generateContentFields($loginCredentials["episerver_content_fields"]);
+                exit;
+                
                 $this->domain = $loginCredentials["domain"];
                 $webserviceObject = new WebserviceConnect($this->domain, $loginCredentials["ws_username"], $loginCredentials["ws_password"]);
                 
@@ -268,6 +272,13 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
 
 		return $success;
 	}
+    
+    private function generateContentFields($commaSeparatedString) {
+        if($commaSeparatedString) {
+            $contentArray = explode(",", $commaSeparatedString);
+            print_r($contentArray);
+        }
+    }
     
     /**
      * tx_mnepiserver2typo3_ImportDataTask::generatePageDataArray()

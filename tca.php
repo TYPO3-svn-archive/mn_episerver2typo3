@@ -104,7 +104,7 @@ $TCA['tx_mnepiserver2typo3_episerver'] = array (
 				'type' => 'input',	
 				'size' => '30',	
 				'max' => '255',	
-                'default' => 'MainBody,'
+                'default' => 'MainBody'
 			)
 		),
 	),
