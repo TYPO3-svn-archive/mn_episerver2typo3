@@ -64,8 +64,7 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
             
             try {
                 
-                $this->generateContentFields($loginCredentials["episerver_content_fields"]);
-                exit;
+                $episerverContentArray = $this->generateContentFields($loginCredentials["episerver_content_fields"]);
                 
                 $this->domain = $loginCredentials["domain"];
                 $webserviceObject = new WebserviceConnect($this->domain, $loginCredentials["ws_username"], $loginCredentials["ws_password"]);
@@ -75,7 +74,7 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                 
                 $pageData = array();
                 //Get the startpage of the structure and generate a PageDataArray
-                $startPageArray = $this->generatePageDataArray($startPage["GetPageResult"]["Property"]["RawProperty"], $loginCredentials["t3_root_page_id"], $loginCredentials["uid"]);
+                $startPageArray = $this->generatePageDataArray($startPage["GetPageResult"]["Property"]["RawProperty"], $loginCredentials["t3_root_page_id"], $loginCredentials["uid"], $episerverContentArray);
                 $pageData[$startPageArray["PageLink"]] = $startPageArray;
                 //Then insert starpage into the database
                 $insertPage = new DatabaseQueries();
@@ -110,7 +109,7 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                             //Set that page is first level item
                             $tempData[] = array("Name" => "IsFirstLevel", "Value" => true);
                         }
-                        $pageData[$pageId] = $this->generatePageDataArray($tempData, $startPageId, $loginCredentials["uid"]);
+                        $pageData[$pageId] = $this->generatePageDataArray($tempData, $startPageId, $loginCredentials["uid"], $episerverContentArray);
                         
                         //Second level
                         $secondLevel = $webserviceObject->getChildren($pageId, 0, "http://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
@@ -125,7 +124,7 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                                             $secondLevelPageId = $secondLevelPageProperties["Value"];
                                         }
                                     }
-                                    $pageData[$secondLevelPageId] = $this->generatePageDataArray($secondLevelTempData, $pageId, $loginCredentials["uid"]);
+                                    $pageData[$secondLevelPageId] = $this->generatePageDataArray($secondLevelTempData, $pageId, $loginCredentials["uid"], $episerverContentArray);
                                     
                                     //Third level
                                     $thirdLevel = $webserviceObject->getChildren($secondLevelPageId, 0, "http://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
@@ -140,7 +139,7 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                                                         $thirdLevelPageId = $thirdLevelPageProperties["Value"];
                                                     }
                                                 }
-                                                $pageData[$thirdLevelPageId] = $this->generatePageDataArray($thirdLevelTempData, $secondLevelPageId, $loginCredentials["uid"]);
+                                                $pageData[$thirdLevelPageId] = $this->generatePageDataArray($thirdLevelTempData, $secondLevelPageId, $loginCredentials["uid"], $episerverContentArray);
                                                 
                                                 //Fourth level
                                                 $fourthLevel = $webserviceObject->getChildren($thirdLevelPageId, 0, "http://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
@@ -155,7 +154,7 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                                                                     $fourthLevelPageId = $fourthLevelPageProperties["Value"];
                                                                 }
                                                             }
-                                                            $pageData[$fourthLevelPageId] = $this->generatePageDataArray($fourthLevelTempData, $thirdLevelPageId, $loginCredentials["uid"]);
+                                                            $pageData[$fourthLevelPageId] = $this->generatePageDataArray($fourthLevelTempData, $thirdLevelPageId, $loginCredentials["uid"], $episerverContentArray);
                                                             
                                                             //Fifth level
                                                             $fifthLevel = $webserviceObject->getChildren($fourthLevelPageId, 0, "http://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
@@ -170,7 +169,7 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                                                                                 $fifthLevelPageId = $fifthLevelPageProperties["Value"];
                                                                             }
                                                                         }
-                                                                        $pageData[$fifthLevelPageId] = $this->generatePageDataArray($fifthLevelTempData, $fourthLevelPageId, $loginCredentials["uid"]);
+                                                                        $pageData[$fifthLevelPageId] = $this->generatePageDataArray($fifthLevelTempData, $fourthLevelPageId, $loginCredentials["uid"], $episerverContentArray);
                                                                         
                                                                         //Sixth level
                                                                         $sixthLevel = $webserviceObject->getChildren($fifthLevelPageId, 0, "http://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
@@ -185,7 +184,7 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                                                                                             $sixthLevelPageId = $sixthLevelPageProperties["Value"];
                                                                                         }
                                                                                     }
-                                                                                    $pageData[$sixthLevelPageId] = $this->generatePageDataArray($sixthLevelTempData, $fifthLevelPageId, $loginCredentials["uid"]);    
+                                                                                    $pageData[$sixthLevelPageId] = $this->generatePageDataArray($sixthLevelTempData, $fifthLevelPageId, $loginCredentials["uid"], $episerverContentArray);    
                                                                                 }
                                                                             }
                                                                         }
@@ -276,7 +275,7 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
     private function generateContentFields($commaSeparatedString) {
         if($commaSeparatedString) {
             $contentArray = explode(",", $commaSeparatedString);
-            print_r($contentArray);
+            return $contentArray;
         }
     }
     
@@ -287,15 +286,15 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
      * @param array $data
      * @return array $pageArray
      */
-    private function generatePageDataArray($data, $pid, $episerverSiteId) {
+    private function generatePageDataArray($data, $pid, $episerverSiteId, $contentArray) {
         $pageArray = array();
         foreach($data as $tempData) {
             //Values to use from the EPiServer page webservice
             if($tempData["Name"] == "PageLink" || $tempData["Name"] == "PageParentLink" || $tempData["Name"] == "PageDeleted" 
             || $tempData["Name"] == "PageSaved" || $tempData["Name"] == "PageChanged" || $tempData["Name"] == "PageCreatedBy" 
             || $tempData["Name"] == "PageMasterLanguageBranch" || $tempData["Name"] == "PageName" 
-            || $tempData["Name"] == "PageVisibleInMenu" || $tempData["Name"] == "MainBody" || $tempData["Name"] == "IsFirstLevel"
-            || $tempData["Name"] == "PageMasterLanguageBranch") {    
+            || $tempData["Name"] == "PageVisibleInMenu" || $tempData["Name"] == "IsFirstLevel"
+            || $tempData["Name"] == "PageMasterLanguageBranch" || in_array($tempData["Name"], $contentArray)) {    
                 $pageArray[$tempData["Name"]] = $tempData["Value"];
             }
             //Set the parent id (pid)
