@@ -64,6 +64,7 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
             
             try {
                 
+                //Get the mapped content fields in config for EPiServer specific fields to import
                 $episerverContentArray = $this->generateContentFields($loginCredentials["episerver_content_fields"]);
                 
                 $this->domain = $loginCredentials["domain"];
@@ -84,13 +85,13 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                         //Update page if choosen in scheduler
                         if($this->update_pages == "true") {
                             $insertPage->updatePageData($page);   
-                            $insertPage->updatePageContent($page, $tempPageData["uid"]); 
+                            //$insertPage->updatePageContent($page, $tempPageData["uid"], $episerverContentArray); 
                         }
                         $startPageId = $tempPageData["uid"];
                     }
                     else {
                         $startPageId = $insertPage->insertPageData($page);    
-                        $insertPage->insertPageContent($page, $startPageId);
+                        $insertPage->insertPageContent($page, $startPageId, $episerverContentArray);
                     }
                 }
                 
@@ -238,13 +239,13 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                         //Update page if choosen in scheduler
                         if($this->update_pages == "true") {
                             $insertPage->updatePageData($page);
-                            $insertPage->updatePageContent($page, $tempPageData["uid"]);
+                            //$insertPage->updatePageContent($page, $tempPageData["uid"], $episerverContentArray);
                         }
                         $pageId = $tempPageData["uid"];
                     }
                     else {
                         $pageId = $insertPage->insertPageData($page);    
-                        $insertPage->insertPageContent($page, $pageId);
+                        $insertPage->insertPageContent($page, $pageId, $episerverContentArray);
                     }
                 }
                 
@@ -272,6 +273,13 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
 		return $success;
 	}
     
+    /**
+     * tx_mnepiserver2typo3_ImportDataTask::generateContentFields()
+     * Get the mapped content fields in config for EPiServer specific fields to import.
+     * 
+     * @param string $commaSeparatedString
+     * @return array $contentArray
+     */
     private function generateContentFields($commaSeparatedString) {
         if($commaSeparatedString) {
             $contentArray = explode(",", $commaSeparatedString);

@@ -161,26 +161,29 @@ class DatabaseQueries {
      * @param integer $pid
      * @return integer $lastInsertId
      */
-    public function insertPageContent($pageArray, $pid) {
-        if($pageArray["PageName"] != "") {
-            $insertArray = array(
-                'pid' => $pid,
-                'header' => $pageArray["PageName"],
-                'bodytext' => $pageArray["MainBody"],
-                'tx_mnepiserver2typo3_episerver_id' => $pageArray["PageLink"],
-                'tx_mnepiserver2typo3_episerver_site_id' => $pageArray["EpiserverSiteId"],
-                'CType' => 'text',
-                'colPos' => 0,
-                'tstamp' => mktime(),
-                'crdate' => mktime(),   
-            );
-            $res = $GLOBALS['TYPO3_DB']->exec_INSERTquery('tt_content', $insertArray);
-            $lastInsertId = mysql_insert_id();
-            return $lastInsertId;    
+    public function insertPageContent($pageArray, $pid, $episerverContentArray) {
+        foreach($episerverContentArray as $contentItem) {
+            if($pageArray["PageName"] != "" && $pageArray[$contentItem] != "") {
+                $insertArray = array(
+                    'pid' => $pid,
+                    'header' => $pageArray["PageName"],
+                    'bodytext' => $pageArray[$contentItem],//$pageArray["MainBody"],
+                    'tx_mnepiserver2typo3_episerver_id' => $pageArray["PageLink"],
+                    'tx_mnepiserver2typo3_episerver_site_id' => $pageArray["EpiserverSiteId"],
+                    'CType' => 'text',
+                    'colPos' => 0,
+                    'tstamp' => mktime(),
+                    'crdate' => mktime(),   
+                );
+                $res = $GLOBALS['TYPO3_DB']->exec_INSERTquery('tt_content', $insertArray);
+                //$lastInsertId = mysql_insert_id();
+                //return $lastInsertId;    
+            }
+            /*else {
+                return 0;    
+            } */   
         }
-        else {
-            return 0;    
-        }
+        
     }
     
     /**
@@ -191,18 +194,22 @@ class DatabaseQueries {
      * @param integer $pid
      * @return void
      */
-    public function updatePageContent($pageArray, $pid) {
-        $updateArray = array(
-            'pid' => $pid,
-            'header' => $pageArray["PageName"],
-            'bodytext' => $pageArray["MainBody"],
-            'CType' => 'text',
-            'colPos' => 0,
-            'tstamp' => mktime(),
-            'crdate' => mktime(),
-        );
-        $res = $GLOBALS['TYPO3_DB']->exec_UPDATEquery('tt_content', 'tx_mnepiserver2typo3_episerver_id=' . $pageArray["PageLink"], $updateArray);
-        return $res;
+    public function updatePageContent($pageArray, $pid, $episerverContentArray) {
+        foreach($episerverContentArray as $contentItem) {
+            if($pageArray[$contentItem] != "") {
+                $updateArray = array(
+                    'pid' => $pid,
+                    'header' => $pageArray["PageName"],
+                    'bodytext' => $pageArray[$contentItem],//$pageArray["MainBody"],
+                    'CType' => 'text',
+                    'colPos' => 0,
+                    'tstamp' => mktime(),
+                    'crdate' => mktime(),
+                );
+                $res = $GLOBALS['TYPO3_DB']->exec_UPDATEquery('tt_content', 'tx_mnepiserver2typo3_episerver_id=' . $pageArray["PageLink"], $updateArray);
+                return $res;
+            }
+        }
     }
     
     /**
