@@ -74,6 +74,8 @@ class DatabaseQueries {
                 'urltype' => 1,
                 'doktype' => 1,
                 'cruser_id' => $GLOBALS["BE_USER"]->user["uid"],
+           	    'author' => $GLOBALS["BE_USER"]->user["realName"],
+                'author_email' => $GLOBALS["BE_USER"]->user["email"], 
                 'sorting' => 0,
                 'nav_hide' => ($pageArray["PageVisibleInMenu"] == True) ? 0 : 1,
             );
@@ -102,6 +104,8 @@ class DatabaseQueries {
             'urltype' => 1,
             'doktype' => 1,
             'cruser_id' => $GLOBALS["BE_USER"]->user["uid"],
+           	'author' => $GLOBALS["BE_USER"]->user["realName"],
+            'author_email' => $GLOBALS["BE_USER"]->user["email"], 
             'sorting' => 0,
             'nav_hide' => ($pageArray["PageVisibleInMenu"] == True) ? 0 : 1
         );
@@ -167,7 +171,7 @@ class DatabaseQueries {
                 $insertArray = array(
                     'pid' => $pid,
                     'header' => $pageArray["PageName"],
-                    'bodytext' => $pageArray[$contentItem],//$pageArray["MainBody"],
+                    'bodytext' => $pageArray[$contentItem],
                     'tx_mnepiserver2typo3_episerver_id' => $pageArray["PageLink"],
                     'tx_mnepiserver2typo3_episerver_site_id' => $pageArray["EpiserverSiteId"],
                     'CType' => 'text',
