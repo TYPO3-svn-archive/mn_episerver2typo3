@@ -73,7 +73,7 @@ class DatabaseQueries {
                 'crdate' => mktime(),   
                 'urltype' => 1,
                 'doktype' => 1,
-                //'cruser_id' => 1,
+                'cruser_id' => $GLOBALS["BE_USER"]->user["uid"],
                 'sorting' => 0,
                 'nav_hide' => ($pageArray["PageVisibleInMenu"] == True) ? 0 : 1,
             );
@@ -101,7 +101,7 @@ class DatabaseQueries {
             'tstamp' => mktime(),   
             'urltype' => 1,
             'doktype' => 1,
-            'cruser_id' => 1,
+            'cruser_id' => $GLOBALS["BE_USER"]->user["uid"],
             'sorting' => 0,
             'nav_hide' => ($pageArray["PageVisibleInMenu"] == True) ? 0 : 1
         );
@@ -175,40 +175,8 @@ class DatabaseQueries {
                     'tstamp' => mktime(),
                     'crdate' => mktime(),   
                 );
-                $res = $GLOBALS['TYPO3_DB']->exec_INSERTquery('tt_content', $insertArray);
-                //$lastInsertId = mysql_insert_id();
-                //return $lastInsertId;    
-            }
-            /*else {
-                return 0;    
-            } */   
-        }
-        
-    }
-    
-    /**
-     * DatabaseQueries::updatePageContent()
-     * Update the content for a page.
-     * 
-     * @param array $pageArray
-     * @param integer $pid
-     * @return void
-     */
-    public function updatePageContent($pageArray, $pid, $episerverContentArray) {
-        foreach($episerverContentArray as $contentItem) {
-            if($pageArray[$contentItem] != "") {
-                $updateArray = array(
-                    'pid' => $pid,
-                    'header' => $pageArray["PageName"],
-                    'bodytext' => $pageArray[$contentItem],//$pageArray["MainBody"],
-                    'CType' => 'text',
-                    'colPos' => 0,
-                    'tstamp' => mktime(),
-                    'crdate' => mktime(),
-                );
-                $res = $GLOBALS['TYPO3_DB']->exec_UPDATEquery('tt_content', 'tx_mnepiserver2typo3_episerver_id=' . $pageArray["PageLink"], $updateArray);
-                return $res;
-            }
+                $res = $GLOBALS['TYPO3_DB']->exec_INSERTquery('tt_content', $insertArray);   
+            }  
         }
     }
     
@@ -223,6 +191,12 @@ class DatabaseQueries {
         $GLOBALS['TYPO3_DB']->exec_DELETEquery('tt_content', 'tx_mnepiserver2typo3_episerver_id != 0 AND tx_mnepiserver2typo3_episerver_site_id = ' . $episerverSiteId);
     }
     
+    /**
+     * DatabaseQueries::getSystemLanguages()
+     * Get the TYPO3 system languages activated.
+     * 
+     * @return array $languages
+     */
     public function getSystemLanguages() {
         $languages = false;
         $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -256,7 +230,7 @@ class DatabaseQueries {
                 'crdate' => mktime(),   
                 'urltype' => 1,
                 'doktype' => 1,
-                //'cruser_id' => 1,
+                'cruser_id' => $GLOBALS["BE_USER"]->user["uid"],
                 'sorting' => 0,
                 'sys_language_uid' => $sysLanguageUid
             );

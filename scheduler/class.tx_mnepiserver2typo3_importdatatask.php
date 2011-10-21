@@ -84,8 +84,7 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                     if($tempPageData["uid"] > 0) {
                         //Update page if choosen in scheduler
                         if($this->update_pages == "true") {
-                            $insertPage->updatePageData($page);   
-                            //$insertPage->updatePageContent($page, $tempPageData["uid"], $episerverContentArray); 
+                            $insertPage->updatePageData($page);    
                         }
                         $startPageId = $tempPageData["uid"];
                     }
@@ -210,25 +209,6 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                     }    
                 }
                 
-                /*$pageData = array( 4 => array(
-                        PageLink => 4,
-                        PageParentLink => 3,
-                        PageDeleted => "",
-                        PageSaved => "09/15/2011 10:47:57",
-                        PageChanged => "08/30/2011 13:32:20",
-                        PageCreatedBy => "",
-                        PageMasterLanguageBranch => "en",
-                        PageName => "EPiServer page",
-                        IsFirstLevel => true,
-                        PageVisibleInMenu => true,
-                        MainBody => "<p>Lorem ipsum testar lite nytt innehåll</p>",
-                        pid => 1
-                    )
-                );*/
-                
-                /*print_r($pageData);
-                exit;*/
-                
                 foreach($pageData as $page) {
                     $tempPageData = $insertPage->getPageInT3($page["PageLink"]);
                     if(!$page["IsFirstLevel"]) {
@@ -239,7 +219,6 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                         //Update page if choosen in scheduler
                         if($this->update_pages == "true") {
                             $insertPage->updatePageData($page);
-                            //$insertPage->updatePageContent($page, $tempPageData["uid"], $episerverContentArray);
                         }
                         $pageId = $tempPageData["uid"];
                     }
