@@ -232,11 +232,11 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                 $success = true;
                 
                 if($success == true) {
-                    // Logging a successful test to EPiServer 
+                    // Logging a successful import from EPiServer 
                     t3lib_div::devLog('[tx_mnepiserver2typo3_ImportDataTask]: Succesfully imported data from: ' . $this->domain, 'scheduler', 0);    
                 }   
                 else {
-                    // Logging a successful test to EPiServer 
+                    // Logging a unsuccessful import from EPiServer
                     t3lib_div::devLog('[tx_mnepiserver2typo3_ImportDataTask]: Connection with EPiServer for: ' . $this->domain . ' failed.', 'scheduler', 2);
                 } 
             }
