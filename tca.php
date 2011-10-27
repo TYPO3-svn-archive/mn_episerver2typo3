@@ -6,7 +6,7 @@ if (!defined('TYPO3_MODE')) {
 $TCA['tx_mnepiserver2typo3_episerver'] = array (
 	'ctrl' => $TCA['tx_mnepiserver2typo3_episerver']['ctrl'],
 	'interface' => array (
-		'showRecordFieldList' => 'sys_language_uid,l10n_parent,l10n_diffsource,hidden,domain,ws_username,ws_password,episerver_startpage_id,t3_root_page_id,episerver_content_fields'
+		'showRecordFieldList' => 'sys_language_uid,l10n_parent,l10n_diffsource,hidden,domain,ws_username,ws_password,episerver_startpage_id,t3_root_page_id,episerver_content_fields,episerver_languages'
 	),
 	'feInterface' => $TCA['tx_mnepiserver2typo3_episerver']['feInterface'],
 	'columns' => array (
@@ -107,9 +107,22 @@ $TCA['tx_mnepiserver2typo3_episerver'] = array (
                 'default' => 'MainBody'
 			)
 		),
+        'episerver_languages' => array (		
+			'exclude' => 0,		
+			'label' => 'LLL:EXT:mn_episerver2typo3/locallang_db.xml:tx_mnepiserver2typo3_episerver.episerver_languages',		
+			'config' => array( 
+                'type' => 'group', 
+                'internal_type' => 'db', 
+                'allowed' => 'sys_language', 
+                'prepend_tname' => 1, 
+                'size' => 5, 
+                'maxitems' => 9999, 
+                'MM' => 'tx_mnepiserver2typo3_episerver_language_mm',
+            ) 
+		),
 	),
 	'types' => array (
-		'0' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, domain, ws_username, ws_password, episerver_startpage_id, t3_root_page_id, episerver_content_fields')
+		'0' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, domain, ws_username, ws_password, episerver_startpage_id, t3_root_page_id, episerver_content_fields, episerver_languages')
 	),
 	'palettes' => array (
 		'1' => array('showitem' => '')

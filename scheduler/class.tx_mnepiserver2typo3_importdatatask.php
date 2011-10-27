@@ -64,6 +64,11 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
             
             try {
                 
+                //If languages is chosen for a record.
+                if($loginCredentials["episerver_languages"] > 0) {
+                    $systemLanguagesArray = $this->getLanguages($loginCredentials["uid"]);
+                }
+                
                 //Get the mapped content fields in config for EPiServer specific fields to import
                 $episerverContentArray = $this->generateContentFields($loginCredentials["episerver_content_fields"]);
                 
@@ -290,6 +295,21 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
         }
         
         return $pageArray;
+    }
+
+    /**
+     * tx_mnepiserver2typo3_ImportDataTask::getLanguages()
+     * 
+     * @param mixed $recordUid
+     * @return
+     */
+    private function getLanguages($recordUid) {
+        $dbConnect = new DatabaseQueries();
+        $systemLanguage = array();
+        foreach($dbConnect->getLanguagesForEpiserverRecord($recordUid) as $languageUid) {
+            $systemLanguage[] = $dbConnect->getSystemLanguage($languageUid["uid_foreign"]);
+        }
+        return $systemLanguage;
     }
 
     /**

@@ -34,7 +34,19 @@ CREATE TABLE tx_mnepiserver2typo3_episerver (
     episerver_startpage_id int(11) DEFAULT '0' NOT NULL,
     t3_root_page_id int(11) DEFAULT '0' NOT NULL,
     episerver_content_fields tinytext,
+    episerver_languages tinytext,
 	
 	PRIMARY KEY (uid),
 	KEY parent (pid)
+);
+
+#
+# Table structure for table 'tx_mnepiserver2typo3_episerver_language_mm'
+#
+CREATE TABLE tx_mnepiserver2typo3_episerver_language_mm (
+    uid_local int(11) DEFAULT '0' NOT NULL,				
+	uid_foreign int(11) DEFAULT '0' NOT NULL,
+    tablenames tinytext,
+    sorting  int(11) DEFAULT '0' NOT NULL,
+    sorting_foreign  int(11) DEFAULT '0' NOT NULL
 );

@@ -196,22 +196,42 @@ class DatabaseQueries {
     }
     
     /**
+     * DatabaseQueries::getLanguagesForEpiserverRecord()
+     * Get all the languages for a Episerver record.
+     * 
+     * @param integer $recordUid
+     * @return array $languages
+     */
+    public function getLanguagesForEpiserverRecord($recordUid) {
+        $languages = array();
+        $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+            'uid_foreign', 
+            'tx_mnepiserver2typo3_episerver_language_mm', 
+            'uid_local = ' . $recordUid
+        );
+        while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+            $languages[] = $row;        
+        }
+        return $languages;
+        
+    }
+    
+    /**
      * DatabaseQueries::getSystemLanguages()
      * Get the TYPO3 system languages activated.
      * 
      * @return array $languages
      */
-    public function getSystemLanguages() {
-        $languages = false;
+    public function getSystemLanguage($languageUid) {
         $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             '*', 
             'sys_language', 
-            ''
+            'uid = ' . $languageUid
         );
         while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-            $languages = true;        
+            $language = $row;        
         }
-        return $languages;
+        return $language;
     }
     
     /**

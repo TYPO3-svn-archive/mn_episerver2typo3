@@ -14,6 +14,7 @@
             <label index="tx_mnepiserver2typo3_episerver.episerver_startpage_id">EPiServer startpage id</label>
             <label index="tx_mnepiserver2typo3_episerver.t3_root_page_id">TYPO3 root page id, for putting the EPiServer page structure</label>
             <label index="tx_mnepiserver2typo3_episerver.episerver_content_fields">EPiServer content fields, add by comma separating</label>
+            <label index="tx_mnepiserver2typo3_episerver.episerver_languages">EPiServer languages, NOTE: English is always current!</label>
 		</languageKey>
 		<languageKey index="se" type="array">
 			<label index="pages.tx_mnepiserver2typo3_episerver_id">EPiServer Id</label>
@@ -24,6 +25,7 @@
             <label index="tx_mnepiserver2typo3_episerver.episerver_startpage_id">EPiServer startside id</label>
             <label index="tx_mnepiserver2typo3_episerver.t3_root_page_id">TYPO3 root page id, for putting the EPiServer page structure</label>
             <label index="tx_mnepiserver2typo3_episerver.episerver_content_fields">EPiServer content fields, add by comma separating</label>
+            <label index="tx_mnepiserver2typo3_episerver.episerver_languages">EPiServer languages, NOTE: English is always current!</label>
 		</languageKey>
 	</data>
 </T3locallang>
