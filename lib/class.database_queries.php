@@ -216,9 +216,13 @@ class DatabaseQueries {
         
     }
     
+    public function getTranslatedLanguage($episerverLanguageCode) {
+        
+    }
+    
     /**
      * DatabaseQueries::getSystemLanguages()
-     * Get the TYPO3 system languages activated.
+     * Get the TYPO3 system language.
      * 
      * @return array $languages
      */

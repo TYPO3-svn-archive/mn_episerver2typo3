@@ -64,16 +64,20 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
             
             try {
                 
-                //If languages is chosen for a record.
-                if($loginCredentials["episerver_languages"] > 0) {
-                    $systemLanguagesArray = $this->getLanguages($loginCredentials["uid"]);
-                }
-                
                 //Get the mapped content fields in config for EPiServer specific fields to import
                 $episerverContentArray = $this->generateContentFields($loginCredentials["episerver_content_fields"]);
                 
                 $this->domain = $loginCredentials["domain"];
                 $webserviceObject = new WebserviceConnect($this->domain, $loginCredentials["ws_username"], $loginCredentials["ws_password"]);
+                
+                //If languages is chosen for a record.
+                if($loginCredentials["episerver_languages"] > 0) {
+                    $systemLanguagesArray = $this->getLanguages($loginCredentials["uid"]);
+                    $episerverLanguageArray = $webserviceObject->getLanguageBranches($loginCredentials["episerver_startpage_id"], 0, "http://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
+                    print_r($systemLanguagesArray);
+                    print_r($episerverLanguageArray);
+                    exit;
+                }
                 
                 $startPage = $webserviceObject->getPage($loginCredentials["episerver_startpage_id"], 0, "http://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
                 $firstLevel = $webserviceObject->getChildren($loginCredentials["episerver_startpage_id"], 0, "http://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
