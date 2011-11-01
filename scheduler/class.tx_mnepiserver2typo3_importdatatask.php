@@ -69,14 +69,20 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                 
                 $this->domain = $loginCredentials["domain"];
                 $webserviceObject = new WebserviceConnect($this->domain, $loginCredentials["ws_username"], $loginCredentials["ws_password"]);
+                $insertPage = new DatabaseQueries();                
                 
                 //If languages is chosen for a record.
                 if($loginCredentials["episerver_languages"] > 0) {
+                    $translatedLanguageArray = array();
                     $systemLanguagesArray = $this->getLanguages($loginCredentials["uid"]);
                     $episerverLanguageArray = $webserviceObject->getLanguageBranches($loginCredentials["episerver_startpage_id"], 0, "http://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
-                    /*print_r($systemLanguagesArray);
+                    foreach($episerverLanguageArray as $epiLang) {
+                        $translatedLanguageArray[$epiLang] = $insertPage->getTranslatedLanguage($epiLang);
+                    }
+                    print_r($systemLanguagesArray);
                     print_r($episerverLanguageArray);
-                    exit;*/
+                    print_r($translatedLanguageArray);
+                    exit;
                 }
                 
                 $startPage = $webserviceObject->getPage($loginCredentials["episerver_startpage_id"], 0, "http://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
@@ -86,8 +92,7 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                 //Get the startpage of the structure and generate a PageDataArray
                 $startPageArray = $this->generatePageDataArray($startPage["GetPageResult"]["Property"]["RawProperty"], $loginCredentials["t3_root_page_id"], $loginCredentials["uid"], $episerverContentArray);
                 $pageData[$startPageArray["PageLink"]] = $startPageArray;
-                //Then insert starpage into the database
-                $insertPage = new DatabaseQueries();
+                //Then insert startpage into the database
                 foreach($pageData as $page) {
                     $tempPageData = $insertPage->getPageInT3($page["PageLink"]);
                     if($tempPageData["uid"] > 0) {

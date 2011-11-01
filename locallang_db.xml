@@ -18,6 +18,8 @@
             <label index="tx_mnepiserver2typo3_episerver_language_translation">Language translation</label>
             <label index="tx_mnepiserver2typo3_episerver_language_translation.episerver_language_code">EPiServer language code</label>
             <label index="tx_mnepiserver2typo3_episerver_language_translation.typo3_language_code">TYPO3 language code</label>
+            <label index="tx_mnepiserver2typo3_episerver_installation_languages.installation_uid">EPiServer installation</label>
+            <label index="tx_mnepiserver2typo3_episerver_installation_languages">EPiServer installation languages</label>
 		</languageKey>
 		<languageKey index="se" type="array">
 			<label index="pages.tx_mnepiserver2typo3_episerver_id">EPiServer Id</label>
@@ -32,6 +34,8 @@
             <label index="tx_mnepiserver2typo3_episerver_language_translation">Language translation</label>
             <label index="tx_mnepiserver2typo3_episerver_language_translation.episerver_language_code">EPiServer language code</label>
             <label index="tx_mnepiserver2typo3_episerver_language_translation.typo3_language_code">TYPO3 language code</label>
+            <label index="tx_mnepiserver2typo3_episerver_installation_languages.installation_uid">EPiServer installation</label>
+            <label index="tx_mnepiserver2typo3_episerver_installation_languages">EPiServer installation languages</label>
 		</languageKey>
 	</data>
 </T3locallang>

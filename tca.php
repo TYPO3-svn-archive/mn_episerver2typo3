@@ -196,15 +196,97 @@ $TCA['tx_mnepiserver2typo3_episerver_language_translation'] = array (
 				),
                 'foreign_table' => 'sys_language',
             )
-            /*'config' => array (
-				'type' => 'input',	
-				'size' => '30',	
-				'max' => '255',	
-			)*/
 		),
 	),
 	'types' => array (
 		'0' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, domain, episerver_language_code, typo3_language_code')
+	),
+	'palettes' => array (
+		'1' => array('showitem' => '')
+	)
+);
+
+
+$TCA['tx_mnepiserver2typo3_episerver_installation_languages'] = array (
+	'ctrl' => $TCA['tx_mnepiserver2typo3_episerver_installation_languages']['ctrl'],
+	'interface' => array (
+		'showRecordFieldList' => 'sys_language_uid,l10n_parent,l10n_diffsource,hidden,domain,episerver_language_code,typo3_language_code,installation_uid'
+	),
+	'feInterface' => $TCA['tx_mnepiserver2typo3_episerver_installation_languages']['feInterface'],
+	'columns' => array (
+		'sys_language_uid' => array (		
+			'exclude' => 1,
+			'label'  => 'LLL:EXT:lang/locallang_general.xml:LGL.language',
+			'config' => array (
+				'type'                => 'select',
+				'foreign_table'       => 'sys_language',
+				'foreign_table_where' => 'ORDER BY sys_language.title',
+				'items' => array(
+					array('LLL:EXT:lang/locallang_general.xml:LGL.allLanguages', -1),
+					array('LLL:EXT:lang/locallang_general.xml:LGL.default_value', 0)
+				)
+			)
+		),
+		'l10n_parent' => array (		
+			'displayCond' => 'FIELD:sys_language_uid:>:0',
+			'exclude'     => 1,
+			'label'       => 'LLL:EXT:lang/locallang_general.xml:LGL.l18n_parent',
+			'config'      => array (
+				'type'  => 'select',
+				'items' => array (
+					array('', 0),
+				),
+				'foreign_table'       => 'tx_mnepiserver2typo3_episerver_installation_languages',
+				'foreign_table_where' => 'AND tx_mnepiserver2typo3_episerver_installation_languages.pid=###CURRENT_PID### AND tx_mnepiserver2typo3_episerver_installation_languages.sys_language_uid IN (-1,0)',
+			)
+		),
+		'l10n_diffsource' => array (		
+			'config' => array (
+				'type' => 'passthrough'
+			)
+		),
+		'hidden' => array (		
+			'exclude' => 1,
+			'label'   => 'LLL:EXT:lang/locallang_general.xml:LGL.hidden',
+			'config'  => array (
+				'type'    => 'check',
+				'default' => '0'
+			)
+		),
+        'episerver_language_code' => array (		
+			'exclude' => 0,		
+			'label' => 'LLL:EXT:mn_episerver2typo3/locallang_db.xml:tx_mnepiserver2typo3_episerver_language_translation.episerver_language_code',		
+			'config' => array (
+				'type' => 'input',	
+				'size' => '30',	
+				'max' => '255',	
+			)
+		),
+        'typo3_language_code' => array (		
+			'exclude' => 0,		
+			'label' => 'LLL:EXT:mn_episerver2typo3/locallang_db.xml:tx_mnepiserver2typo3_episerver_language_translation.typo3_language_code',		
+    		'config' => array (            
+            	'type'  => 'select',
+    				'items' => array (
+    					array('English', 0),
+				),
+                'foreign_table' => 'sys_language',
+            )
+		),
+        'installation_uid' => array (		
+			'exclude' => 0,		
+			'label' => 'LLL:EXT:mn_episerver2typo3/locallang_db.xml:tx_mnepiserver2typo3_episerver_installation_languages.installation_uid',		
+    		'config' => array (            
+            	'type'  => 'select',
+    				'items' => array (
+    					array('', 0),
+				),
+                'foreign_table' => 'tx_mnepiserver2typo3_episerver',
+            )
+		),
+	),
+	'types' => array (
+		'0' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, domain, episerver_language_code, typo3_language_code, installation_uid')
 	),
 	'palettes' => array (
 		'1' => array('showitem' => '')
