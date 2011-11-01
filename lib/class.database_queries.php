@@ -246,6 +246,17 @@ class DatabaseQueries {
         return $language;
     }
     
+    public function insertEpiserverLanguage($episerverCountryCode, $typo3LanguageUid, $installationUid) {
+        $insertArray = array(
+            'tstamp' => mktime(),
+            'crdate' => mktime(),
+            'episerver_language_code' => $episerverCountryCode,
+            'typo3_language_code' => $typo3LanguageUid,
+            'installation_uid' => $installationUid
+        );
+        $res = $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_mnepiserver2typo3_episerver_installation_languages', $insertArray);  
+    }
+    
     /**
      * DatabaseQueries::createLanugageSpecificPage()
      * Create a language specific page.
