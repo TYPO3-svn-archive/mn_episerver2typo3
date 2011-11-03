@@ -1,0 +1,1 @@
+INSERT INTO tx_mnepiserver2typo3_episerver_language_translation (episerver_language_code, typo3_language_code) VALUES('sv', 'se');

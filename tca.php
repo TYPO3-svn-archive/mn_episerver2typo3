@@ -131,7 +131,7 @@ $TCA['tx_mnepiserver2typo3_episerver'] = array (
 
 
 
-$TCA['tx_mnepiserver2typo3_episerver_language_translation'] = array (
+/*$TCA['tx_mnepiserver2typo3_episerver_language_translation'] = array (
 	'ctrl' => $TCA['tx_mnepiserver2typo3_episerver_language_translation']['ctrl'],
 	'interface' => array (
 		'showRecordFieldList' => 'sys_language_uid,l10n_parent,l10n_diffsource,hidden,domain,episerver_language_code,typo3_language_code'
@@ -204,7 +204,7 @@ $TCA['tx_mnepiserver2typo3_episerver_language_translation'] = array (
 	'palettes' => array (
 		'1' => array('showitem' => '')
 	)
-);
+);*/
 
 
 $TCA['tx_mnepiserver2typo3_episerver_installation_languages'] = array (
