@@ -51,6 +51,7 @@ class tx_mnepiserver2typo3_ImportLanguagesTask extends tx_scheduler_Task {
 	 */
 	public function execute() {
 		$success = false; 
+        $domainUid = $this->domain;
         $loginCredentials = $this->getLoginCredentials($this->domain);
         
 		if (!empty($loginCredentials) && !empty($this->domain)) {
@@ -64,27 +65,30 @@ class tx_mnepiserver2typo3_ImportLanguagesTask extends tx_scheduler_Task {
                 //If languages is chosen for a record.
                 if($loginCredentials["episerver_languages"] > 0) {    
                     $translatedLanguageArray = array();
-                    $systemLanguagesArray = $this->getLanguages($loginCredentials["uid"]);
                     $episerverLanguageArray = $webserviceObject->getLanguageBranches($loginCredentials["episerver_startpage_id"], 0, "http://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
                     foreach($episerverLanguageArray as $epiLang) {
-                        $translatedLanguageArray[$epiLang] = $insertPage->getTranslatedLanguage($epiLang);
+                        if($epiLang == "en") {
+                            $translatedLanguageArray[$epiLang] = 0;
+                        }
+                        else {
+                            $translatedLanguageArray[$epiLang] = $insertPage->getTranslatedLanguage($epiLang);    
+                        }
                     }
-                    print_r($systemLanguagesArray);
-                    print_r($episerverLanguageArray);
-                    print_r($translatedLanguageArray);
-                    exit;    
+                    
+                    foreach($translatedLanguageArray as $key => $value) {
+                        if($insertPage->checkIfEpiserverLanguageExistInTypo3($key, $domainUid) != true) {
+                            $insertPage->insertEpiserverLanguage($key, $value, $domainUid);    
+                        }
+                    }
+                    
+                    $success = true;
                 }
                     
-                /*$databaseQueries = new DatabaseQueries();
-                $databaseQueries->deleteImportedPagesAndContent($this->domain);*/
-                                               
-                $success = true;
-                  
                 if($success == true) { 
-                    t3lib_div::devLog('[tx_mnepiserver2typo3_ImportLanguagesTask]: Data from that has been imported from EPiServer has been removed.', 'scheduler', 0);    
+                    t3lib_div::devLog('[tx_mnepiserver2typo3_ImportLanguagesTask]: Languages has been imported from EPiServer.', 'scheduler', 0);    
                 }   
                 else { 
-                    t3lib_div::devLog('[tx_mnepiserver2typo3_ImportLanguagesTask]: Data from that has been imported from EPiServer has NOT been removed.', 'scheduler', 2);
+                    t3lib_div::devLog('[tx_mnepiserver2typo3_ImportLanguagesTask]: Languages has NOT been imported from EPiServer.', 'scheduler', 2);
                 } 
             }
             catch (Exception $e) {

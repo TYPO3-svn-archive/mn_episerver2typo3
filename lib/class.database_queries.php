@@ -246,15 +246,86 @@ class DatabaseQueries {
         return $language;
     }
     
-    public function insertEpiserverLanguage($episerverCountryCode, $typo3LanguageUid, $installationUid) {
+    /**
+     * DatabaseQueries::insertEpiserverLanguage()
+     * Insert language from EPiServer into TYPO3.
+     * 
+     * @param string $episerverCountryCode
+     * @param string $typo3LanguageCode
+     * @param integer $installationUid
+     * @return void
+     */
+    public function insertEpiserverLanguage($episerverCountryCode, $typo3LanguageCode, $installationUid) {
         $insertArray = array(
             'tstamp' => mktime(),
             'crdate' => mktime(),
             'episerver_language_code' => $episerverCountryCode,
-            'typo3_language_code' => $typo3LanguageUid,
+            'typo3_language_code' => $typo3LanguageCode,
             'installation_uid' => $installationUid
         );
         $res = $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_mnepiserver2typo3_episerver_installation_languages', $insertArray);  
+    }
+    
+    /**
+     * DatabaseQueries::checkIfEpiserverLanguageExistInTypo3()
+     * Check if a language already has been imported from a specific EPiServer. 
+     * 
+     * @param string $episerverLanguageCode
+     * @param integer $installationUid
+     * @return
+     */
+    public function checkIfEpiserverLanguageExistInTypo3($episerverLanguageCode, $installationUid) {
+        $exist = false;
+        $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+            '*', 
+            'tx_mnepiserver2typo3_episerver_installation_languages', 
+            'episerver_language_code LIKE "' . $episerverLanguageCode . '" AND installation_uid = ' . $installationUid
+        );
+        while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+            if($row) {
+                $exist = true;
+                break;
+            }
+        }
+        return $exist;
+    }
+    
+    /**
+     * DatabaseQueries::getEpiserverLanguageCode()
+     * 
+     * @param integer $typo3LanguageUid
+     * @param integer $installationUid
+     * @return string $code
+     */
+    public function getEpiserverLanguageCode($typo3LanguageUid, $installationUid) {
+        $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+            '*', 
+            'tx_mnepiserver2typo3_episerver_installation_languages', 
+            'typo3_language_code = "' . $typo3LanguageUid . '" AND installation_uid = ' . $installationUid
+        );
+        while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+            $code = $row["episerver_language_code"];
+        }
+        return $code;
+    }
+    
+    /**
+     * DatabaseQueries::getTypo3SpecificLanguagesByRecordUid()
+     * 
+     * @param integer $recordUid
+     * @return array $languageArray
+     */
+    public function getTypo3SpecificLanguagesByRecordUid($recordUid) {
+        $languageArray = array();
+        $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+            '*', 
+            'tx_mnepiserver2typo3_episerver_language_mm', 
+            'uid_local = ' . $recordUid
+        );
+        while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+            $languageArray[] = $row["uid_foreign"];
+        }
+        return $languageArray;
     }
     
     /**
