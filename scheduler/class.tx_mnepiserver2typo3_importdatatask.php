@@ -79,6 +79,7 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                         $episerverLanguageCode = $insertPage->getEpiserverLanguageCode($activeLanguages, $loginCredentials["uid"]);
                         $activeLanguageArray[$episerverLanguageCode] = $activeLanguages;
                     }
+                    print_r($activeLanguageArray);
                 }
                 
                 $startPage = $webserviceObject->getPage($loginCredentials["episerver_startpage_id"], 0, "http://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
