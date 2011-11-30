@@ -3,7 +3,7 @@
 /**
  * Queries for the local TYPO3 database
  * 
- * @author  Mattias Nilsson (tollepjaer@gmail.com)
+ * @author  Mr X
  * @version 1.0 
  */ 
 class DatabaseQueries {

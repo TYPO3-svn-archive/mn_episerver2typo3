@@ -5,7 +5,7 @@ require_once('/nusoap/nusoap.php');
 /**
  * The class for connecting to webservice in EPiServer.
  * 
- * @author  Mattias Nilsson (tollepjaer@gmail.com)
+ * @author  Mr X
  * @version 1.0 
  */    
 class WebserviceConnect {
