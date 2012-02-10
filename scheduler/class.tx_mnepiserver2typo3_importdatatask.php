@@ -286,9 +286,9 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
      * @return array $pageArray
      */
     private function generatePageDataArray($data, $pid, $episerverSiteId, $contentArray) {
-        $pageArray = array();
+        /*$pageArray = array();
         print_r($data);
-        exit;
+        exit;*/
         foreach($data as $tempData) {
             //Values to use from the EPiServer page webservice
             if($tempData["Name"] == "PageLink" || $tempData["Name"] == "PageParentLink" || $tempData["Name"] == "PageDeleted" 
