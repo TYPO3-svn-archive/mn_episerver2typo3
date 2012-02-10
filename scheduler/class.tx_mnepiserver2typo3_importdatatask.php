@@ -79,7 +79,7 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                         $episerverLanguageCode = $insertPage->getEpiserverLanguageCode($activeLanguages, $loginCredentials["uid"]);
                         $activeLanguageArray[$episerverLanguageCode] = $activeLanguages;
                     }
-                    print_r($activeLanguageArray);
+                    //print_r($activeLanguageArray);
                     //exit;
                 }
                 
@@ -287,6 +287,8 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
      */
     private function generatePageDataArray($data, $pid, $episerverSiteId, $contentArray) {
         $pageArray = array();
+        print_r($data);
+        exit;
         foreach($data as $tempData) {
             //Values to use from the EPiServer page webservice
             if($tempData["Name"] == "PageLink" || $tempData["Name"] == "PageParentLink" || $tempData["Name"] == "PageDeleted" 
