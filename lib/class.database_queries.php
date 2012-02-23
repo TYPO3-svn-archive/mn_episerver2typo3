@@ -166,9 +166,6 @@ class DatabaseQueries {
      * @return integer $lastInsertId
      */
     public function insertPageContent($pageArray, $pid, $episerverContentArray) {
-        /*print_r($pageArray);
-        print_r($episerverContentArray);
-        exit;*/
         foreach($episerverContentArray as $contentItem) {
             if($pageArray["PageName"] != "" && $pageArray[$contentItem] != "") {
                 $insertArray = array(
