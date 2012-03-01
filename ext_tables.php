@@ -3,6 +3,8 @@ if (!defined('TYPO3_MODE')) {
 	die ('Access denied.');
 }
 
+include_once(t3lib_extMgm::extPath($_EXTKEY).'tca/class.tx_propertyfields_tca.php');
+
 $TCA['tx_mnepiserver2typo3_episerver'] = array (
 	'ctrl' => array (
 		'title'     => 'LLL:EXT:mn_episerver2typo3/locallang_db.xml:tx_mnepiserver2typo3_episerver',		
@@ -68,4 +70,5 @@ $TCA['tx_mnepiserver2typo3_episerver_installation_languages'] = array (
 		
 	t3lib_extMgm::addModule('web', 'txmnepiserver2typo3M1', '', t3lib_extMgm::extPath($_EXTKEY) . 'mod1/');
 }*/
+
 ?>
