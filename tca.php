@@ -112,11 +112,20 @@ $TCA['tx_mnepiserver2typo3_episerver'] = array (
 		#	'l10n_mode' => 'exclude', // the localizalion mode will be handled by the userfunction
 			'label' => 'LLL:EXT:mn_episerver2typo3/locallang_db.xml:tx_mnepiserver2typo3_episerver.episerver_content_fields',
 			'config' => Array (
-				'type' => 'input',
+				/*'type' => 'select',
                 'size' => 10,
                 'minitems' => 0,
                 'maxitems' => 10,
-                'itemsProcFunc' => 'tx_propertyfields_tca->renderPropertyFields', 
+                'itemsProcFunc' => 'tx_propertyfields_tca->user_renderPropertyFields',*/
+                'type' => 'input',
+    			'size' => '40',
+    			'wizards' => array(
+    				'uproc' => array(
+    					'type' => 'userFunc',
+    					'userFunc' => 'tx_propertyfields_tca->user_renderPropertyFields',
+    					'params' => array(),
+    				),
+    			), 
 			)
 		),
         'episerver_languages' => array (		
