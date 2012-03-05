@@ -73,14 +73,12 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                 
                 //If languages is chosen for a record.
                 if($loginCredentials["episerver_languages"] > 0) {
-                    $activeLanguageArray = array();
-                    $activeLanguageArray["en"] = 0;                    
-                    foreach($insertPage->getTypo3SpecificLanguagesByRecordUid($loginCredentials["uid"]) as $activeLanguages) {
-                        $episerverLanguageCode = $insertPage->getEpiserverLanguageCode($activeLanguages, $loginCredentials["uid"]);
-                        $activeLanguageArray[$episerverLanguageCode] = $activeLanguages;
+                    $activeLanguageArray = array();                    
+                    foreach($insertPage->getLanguagesForEpiserverRecord($loginCredentials["uid"]) as $activeLanguage) {
+                        $tempActiveLanguageArray = $insertPage->getSystemLanguage($activeLanguage["uid_foreign"]);
+                        $episerverLanguageCode = $insertPage->getTranslatedLanguage($tempActiveLanguageArray["flag"]);
+                        $activeLanguageArray[$episerverLanguageCode] = $activeLanguage["uid_foreign"];
                     }
-                    //print_r($activeLanguageArray);
-                    //exit;
                 }
                 
                 $startPage = $webserviceObject->getPage($loginCredentials["episerver_startpage_id"], 0, "http://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);

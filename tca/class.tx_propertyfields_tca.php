@@ -1,36 +1,22 @@
 <?php
 
+/**
+ * A class to generate a specific TCA input for EPiServer content fields 
+ */
 class tx_propertyfields_tca {
     
+    var $inputStyles = "";
+    
     /**
-	 * Returns a list of recipients.
+	 * Returns the html for the TCA.
 	 * 
 	 * @param array $params User parameters
 	 * @param t3lib_TCEforms $pObj Parent object
-	 * @return array
+	 * @return string
 	 */
     public function user_renderPropertyFields($params, $pObj) {
-        /*// Add tt_address #4 to the recipient list
-		$params['lists']['tt_address'][] = 4;
-
-			// Add frontend user #1 to the recipient list
-		$params['lists']['fe_users'][] = 1;
-
-			// Retrieve user parameters
-		$sizeOfRecipientList = $params['userParams'] ? $params['userParams'] : 2;
-		for ($i = 0; $i < $sizeOfRecipientList; $i++) {
-			$params['lists']['PLAINLIST'][] = array('name' => 'John Doo #' . $i, 'email' => 'john.doo-' . $i . '@hotmail.com');
-		}*/
-        /*print_r($params);
-        print_r($pObj);*/
         
-        //$html = "<script type='text/javascript' src='" . t3lib_extMgm::extRelPath('mn_episerver2typo3') . "tca/property_fields.js'></script>";
-                
-        //$html .= "<input type='text' value='najs' />";
-        
-        /*print_r($params);
-        print_r($pObj);
-        exit;*/
+        $this->inputStyles = $pObj->defaultMultipleSelectorStyle;
         
         $html = 
             "<style type='text/css'>
@@ -58,7 +44,6 @@ class tx_propertyfields_tca {
     }
     
     /**
-     * tx_propertyfields_tca::generateJavascript()
      * Generate the necessary javascript for the logic.
      * 
      * @return string $html
@@ -110,15 +95,18 @@ class tx_propertyfields_tca {
     }
     
     /**
-     * tx_propertyfields_tca::generateInputField()
      * Generate the input field for content.
      * 
      * @param string $value
      * @return string $html
      */
     public function generateInputField($value) {
-        //Oneliner because of javascript string compability
-        $html = "<div class='episerver_content_field_container'><input type='text' value='" . $value . "' class='episerver_content_field formField1 tceforms-textfield' /><span class='t3-icon t3-icon-actions t3-icon-actions-edit t3-icon-edit-delete episerver_content_field_delete' style='cursor: pointer;' onclick='removeInputField(this);'>&nbsp;</span><br /></div>";
+        $html = 
+            "<div class='episerver_content_field_container'>" .
+                "<input type='text' value='" . $value . "' class='episerver_content_field formField1 tceforms-textfield' style='" . $this->inputStyles . "' />" .
+                "<span class='t3-icon t3-icon-actions t3-icon-actions-edit t3-icon-edit-delete episerver_content_field_delete' style='cursor: pointer;' onclick='removeInputField(this);'>&nbsp;</span>" .
+                "<br />" .
+            "</div>";
         return $html;
     }
     

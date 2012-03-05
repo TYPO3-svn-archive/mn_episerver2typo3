@@ -13,8 +13,8 @@
 			<label index="tx_mnepiserver2typo3_episerver.ws_password">Webservice password</label>
             <label index="tx_mnepiserver2typo3_episerver.episerver_startpage_id">EPiServer startpage id</label>
             <label index="tx_mnepiserver2typo3_episerver.t3_root_page_id">TYPO3 root page id, for putting the EPiServer page structure</label>
-            <label index="tx_mnepiserver2typo3_episerver.episerver_content_fields">EPiServer content fields, add by comma separating</label>
-            <label index="tx_mnepiserver2typo3_episerver.episerver_languages">EPiServer languages, NOTE: English is always current!</label>
+            <label index="tx_mnepiserver2typo3_episerver.episerver_content_fields">EPiServer content fields</label>
+            <label index="tx_mnepiserver2typo3_episerver.episerver_languages">EPiServer languages, NOTE: First language is set as default!</label>
             <label index="tx_mnepiserver2typo3_episerver_language_translation">Language translation</label>
             <label index="tx_mnepiserver2typo3_episerver_language_translation.episerver_language_code">EPiServer language code</label>
             <label index="tx_mnepiserver2typo3_episerver_language_translation.typo3_language_code">TYPO3 language code</label>
@@ -29,8 +29,8 @@
 			<label index="tx_mnepiserver2typo3_episerver.ws_password">Webservice lösenord</label>
             <label index="tx_mnepiserver2typo3_episerver.episerver_startpage_id">EPiServer startside id</label>
             <label index="tx_mnepiserver2typo3_episerver.t3_root_page_id">TYPO3 root page id, for putting the EPiServer page structure</label>
-            <label index="tx_mnepiserver2typo3_episerver.episerver_content_fields">EPiServer content fields, add by comma separating</label>
-            <label index="tx_mnepiserver2typo3_episerver.episerver_languages">EPiServer languages, NOTE: English is always current!</label>
+            <label index="tx_mnepiserver2typo3_episerver.episerver_content_fields">EPiServer content fields</label>
+            <label index="tx_mnepiserver2typo3_episerver.episerver_languages">EPiServer languages, NOTE: First language is set as default!</label>
             <label index="tx_mnepiserver2typo3_episerver_language_translation">Language translation</label>
             <label index="tx_mnepiserver2typo3_episerver_language_translation.episerver_language_code">EPiServer language code</label>
             <label index="tx_mnepiserver2typo3_episerver_language_translation.typo3_language_code">TYPO3 language code</label>

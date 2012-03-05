@@ -216,14 +216,20 @@ class DatabaseQueries {
         
     }
     
-    public function getTranslatedLanguage($episerverLanguageCode) {
+    /**
+     * Get the translated TYPO3 language to EPiServer language code.
+     * 
+     * @param string $typo3LanguageCode
+     * @return string $language
+     */
+    public function getTranslatedLanguage($typo3LanguageCode) {
         $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'typo3_language_code', 
+            'episerver_language_code', 
             'tx_mnepiserver2typo3_episerver_language_translation', 
-            'episerver_language_code = "' . $episerverLanguageCode . '"'
+            'typo3_language_code = "' . $typo3LanguageCode . '"'
         );
         while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-            $language = $row["typo3_language_code"];        
+            $language = $row["episerver_language_code"];        
         }
         return $language;
     }
