@@ -165,7 +165,7 @@ class DatabaseQueries {
      * @param integer $pid
      * @return integer $lastInsertId
      */
-    public function insertPageContent($pageArray, $pid, $episerverContentArray, $systemLanguageUid = 0) {
+    public function insertPageContent($pageArray, $pid, $episerverContentArray) {
         foreach($episerverContentArray as $contentItem) {
             if($pageArray["PageName"] != "" && $pageArray[$contentItem] != "") {
                 $insertArray = array(
@@ -178,7 +178,7 @@ class DatabaseQueries {
                     'colPos' => 0,
                     'tstamp' => mktime(),
                     'crdate' => mktime(),  
-                    'sys_language_uid' => $systemLanguageUid
+                    'sys_language_uid' => $pageArray["Typo3SystemLanguageUid"]
                 );
                 $res = $GLOBALS['TYPO3_DB']->exec_INSERTquery('tt_content', $insertArray);   
             }  
@@ -353,6 +353,8 @@ class DatabaseQueries {
                 'tx_mnepiserver2typo3_episerver_site_id' => $pageArray["EpiserverSiteId"],
                 'tstamp' => mktime(),
                 'crdate' => mktime(),   
+                'author' => $GLOBALS["BE_USER"]->user["realName"],
+                'author_email' => $GLOBALS["BE_USER"]->user["email"], 
                 'urltype' => 1,
                 'doktype' => 1,
                 't3ver_oid' => 0,
