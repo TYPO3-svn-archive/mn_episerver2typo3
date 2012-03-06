@@ -7,6 +7,14 @@ CREATE TABLE pages (
 );
 
 #
+# Table structure for table 'pages_language_overlay'
+#
+CREATE TABLE pages_language_overlay (
+	tx_mnepiserver2typo3_episerver_id int(11) DEFAULT '0' NOT NULL,
+    tx_mnepiserver2typo3_episerver_site_id int(11) DEFAULT '0' NOT NULL
+);
+
+#
 # Table structure for table 'tt_content'
 #
 CREATE TABLE tt_content (
@@ -47,6 +55,6 @@ CREATE TABLE tx_mnepiserver2typo3_episerver_language_mm (
     uid_local int(11) DEFAULT '0' NOT NULL,				
 	uid_foreign int(11) DEFAULT '0' NOT NULL,
     tablenames tinytext,
-    sorting  int(11) DEFAULT '0' NOT NULL,
+    sorting int(11) DEFAULT '0' NOT NULL,
     sorting_foreign  int(11) DEFAULT '0' NOT NULL
 );

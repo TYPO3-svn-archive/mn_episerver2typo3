@@ -22,7 +22,6 @@ class WebserviceConnect {
     }
     
     /**
-     * WebserviceConnect::connectToWebservice()
      * The function to connect to the webservice.
      * 
      * @return  void
@@ -33,7 +32,6 @@ class WebserviceConnect {
     }
     
     /**
-     * WebserviceConnect::testEpiserverConnection()
      * A function to test the connectivity to the webservice.
      * 
      * @return boolean $success  
@@ -59,7 +57,6 @@ class WebserviceConnect {
     }
     
     /**
-     * WebserviceConnect::getPage()
      * Get the page information/data.
      * 
      * @param integer $pageId
@@ -93,7 +90,6 @@ class WebserviceConnect {
     }
     
     /**
-     * WebserviceConnect::getPage()
      * Get the page information/data.
      * 
      * @param integer $pageId
@@ -127,7 +123,6 @@ class WebserviceConnect {
     }
     
     /**
-     * WebserviceConnect::getPage()
      * Get the  default page information.
      * 
      * @param integer $pageId
@@ -162,7 +157,6 @@ class WebserviceConnect {
     }
      
     /**
-     * WebserviceConnect::getLanguageBranches()
      * Get page languages from EPiServer.
      * 
      * @param integer $pageId
@@ -188,7 +182,7 @@ class WebserviceConnect {
         	if ($err) {
         		$success = false;
         	} else {
-                $tempArray = array();
+                /*$tempArray = array();
                 foreach($result["GetLanguageBranchesResult"]["RawPage"] as $languageArray) {
                     foreach($languageArray["Property"]["RawProperty"] as $languageProperty) {
                         if($languageProperty["Name"] == "PageLanguageBranch") {
@@ -196,10 +190,10 @@ class WebserviceConnect {
                         }
                     }
                 }
-                $success = $tempArray;
+                $success = $tempArray;*/
+                $success = $result;
         	}
         }
-        
         
         return $success;
     }

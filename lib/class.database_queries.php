@@ -165,7 +165,7 @@ class DatabaseQueries {
      * @param integer $pid
      * @return integer $lastInsertId
      */
-    public function insertPageContent($pageArray, $pid, $episerverContentArray) {
+    public function insertPageContent($pageArray, $pid, $episerverContentArray, $systemLanguageUid = 0) {
         foreach($episerverContentArray as $contentItem) {
             if($pageArray["PageName"] != "" && $pageArray[$contentItem] != "") {
                 $insertArray = array(
@@ -177,7 +177,8 @@ class DatabaseQueries {
                     'CType' => 'text',
                     'colPos' => 0,
                     'tstamp' => mktime(),
-                    'crdate' => mktime(),   
+                    'crdate' => mktime(),  
+                    'sys_language_uid' => $systemLanguageUid
                 );
                 $res = $GLOBALS['TYPO3_DB']->exec_INSERTquery('tt_content', $insertArray);   
             }  
@@ -192,6 +193,7 @@ class DatabaseQueries {
      */
     public function deleteImportedPagesAndContent($episerverSiteId) {
         $GLOBALS['TYPO3_DB']->exec_DELETEquery('pages', 'tx_mnepiserver2typo3_episerver_id != 0 AND tx_mnepiserver2typo3_episerver_site_id = ' . $episerverSiteId);
+        $GLOBALS['TYPO3_DB']->exec_DELETEquery('pages_language_overlay', 'tx_mnepiserver2typo3_episerver_id != 0 AND tx_mnepiserver2typo3_episerver_site_id = ' . $episerverSiteId);
         $GLOBALS['TYPO3_DB']->exec_DELETEquery('tt_content', 'tx_mnepiserver2typo3_episerver_id != 0 AND tx_mnepiserver2typo3_episerver_site_id = ' . $episerverSiteId);
     }
     
@@ -335,28 +337,41 @@ class DatabaseQueries {
     }
     
     /**
-     * DatabaseQueries::createLanugageSpecificPage()
      * Create a language specific page.
      * 
-     * @param array $pageData
+     * @param array $pageArray
      * @param integer $originalPid
-     * @param integer $sysLanguageUid
      * @return integer $lastInsertId
      */
-    public function createLanugageSpecificPage($pageData, $originalPid, $sysLanguageUid) {
+    public function createLanguageSpecificPage($pageArray, $originalPid) {
         if($pageArray["PageName"] != "") {
             $insertArray = array(
                 'pid' => $originalPid,
                 'title' => $pageArray["PageName"],
                 'nav_title' => $pageArray["PageName"],
                 'tx_mnepiserver2typo3_episerver_id' => $pageArray["PageLink"],
+                'tx_mnepiserver2typo3_episerver_site_id' => $pageArray["EpiserverSiteId"],
                 'tstamp' => mktime(),
                 'crdate' => mktime(),   
                 'urltype' => 1,
                 'doktype' => 1,
+                't3ver_oid' => 0,
+                't3ver_id' => 0,
+                't3ver_wsid' => 0,
+                't3ver_state' => 0,
+                't3ver_stage' => 0,
+                't3ver_count' => 0,
+                't3ver_tstamp' => 0,
+                't3_origuid' => 0,
+                'hidden' => 0,
+                'starttime' => 0,
+                'endtime' => 0,
+                'deleted' => 0,
+                'tx_impexp_origuid' => 0,
+                'shortcut' => 0,
+                'shortcut_mode' => 0,
                 'cruser_id' => $GLOBALS["BE_USER"]->user["uid"],
-                'sorting' => 0,
-                'sys_language_uid' => $sysLanguageUid
+                'sys_language_uid' => $pageArray["Typo3SystemLanguageUid"]
             );
             $res = $GLOBALS['TYPO3_DB']->exec_INSERTquery('pages_language_overlay', $insertArray);
             $lastInsertId = mysql_insert_id();

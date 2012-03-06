@@ -71,13 +71,19 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                 $webserviceObject = new WebserviceConnect($this->domain, $loginCredentials["ws_username"], $loginCredentials["ws_password"]);
                 $insertPage = new DatabaseQueries();                
                 
-                //If languages is chosen for a record.
+                //If languages is chosen for a record then generate language array.
                 if($loginCredentials["episerver_languages"] > 0) {
-                    $activeLanguageArray = array();                    
+                    $activeLanguageArray = array();
+                    $defaultLanguage = "";
+                    $i = 0;                    
                     foreach($insertPage->getLanguagesForEpiserverRecord($loginCredentials["uid"]) as $activeLanguage) {
                         $tempActiveLanguageArray = $insertPage->getSystemLanguage($activeLanguage["uid_foreign"]);
                         $episerverLanguageCode = $insertPage->getTranslatedLanguage($tempActiveLanguageArray["flag"]);
                         $activeLanguageArray[$episerverLanguageCode] = $activeLanguage["uid_foreign"];
+                        if($i == 0) {
+                            $defaultLanguage = array("epiLanguageCode" => $episerverLanguageCode, "typo3LanguageUid" => $activeLanguage["uid_foreign"]);
+                        }
+                        $i++;
                     }
                 }
                 
@@ -87,6 +93,12 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                 $pageData = array();
                 //Get the startpage of the structure and generate a PageDataArray
                 $startPageArray = $this->generatePageDataArray($startPage["GetPageResult"]["Property"]["RawProperty"], $loginCredentials["t3_root_page_id"], $loginCredentials["uid"], $episerverContentArray);
+                
+                /*print_r($startPageArray);
+                print_r($activeLanguageArray);
+                print_r($defaultLanguage);
+                exit;*/
+                
                 $pageData[$startPageArray["PageLink"]] = $startPageArray;
                 //Then insert startpage into the database
                 foreach($pageData as $page) {
@@ -100,8 +112,26 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                     }
                     else {
                         $startPageId = $insertPage->insertPageData($page);    
-                        $insertPage->insertPageContent($page, $startPageId, $episerverContentArray);
+                        $insertPage->insertPageContent($page, $startPageId, $episerverContentArray, $defaultLanguage["typo3LanguageUid"]);
                     }
+                    
+                    if(sizeof($activeLanguageArray) > 0) {
+                        $startPageNotDefaultLanguage = $webserviceObject->getLanguageBranches($loginCredentials["episerver_startpage_id"], 0, "http://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
+                        $startPageNotDefaultLanguageArray = $this->generateLanguagePageDataArray(
+                            $startPageNotDefaultLanguage["GetLanguageBranchesResult"]["RawPage"], 
+                            $loginCredentials["t3_root_page_id"], 
+                            $loginCredentials["uid"], 
+                            $episerverContentArray, 
+                            $defaultLanguage["epiLanguageCode"],
+                            $activeLanguageArray
+                        );
+                        
+                        foreach($startPageNotDefaultLanguageArray as $startPageDefaultLanguageData) {
+                            print_r($startPageDefaultLanguageData);
+                            $tempPageId = $insertPage->createLanguageSpecificPage($startPageDefaultLanguageData, $startPageId);
+                        }
+                    }
+                    
                 }
                 
                 $pageData = array();
@@ -284,16 +314,13 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
      * @return array $pageArray
      */
     private function generatePageDataArray($data, $pid, $episerverSiteId, $contentArray) {
-        /*$pageArray = array();
-        print_r($data);
-        exit;*/
         foreach($data as $tempData) {
             //Values to use from the EPiServer page webservice
             if($tempData["Name"] == "PageLink" || $tempData["Name"] == "PageParentLink" || $tempData["Name"] == "PageDeleted" 
             || $tempData["Name"] == "PageSaved" || $tempData["Name"] == "PageChanged" || $tempData["Name"] == "PageCreatedBy" 
             || $tempData["Name"] == "PageMasterLanguageBranch" || $tempData["Name"] == "PageName" 
             || $tempData["Name"] == "PageVisibleInMenu" || $tempData["Name"] == "IsFirstLevel"
-            || $tempData["Name"] == "PageMasterLanguageBranch" || in_array($tempData["Name"], $contentArray)) {    
+            || $tempData["Name"] == "PageLanguageBranch" || in_array($tempData["Name"], $contentArray)) {    
                 $pageArray[$tempData["Name"]] = $tempData["Value"];
             }
             //Set the parent id (pid)
@@ -302,6 +329,35 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
         }
         
         return $pageArray;
+    }
+    
+    private function generateLanguagePageDataArray($data, $pid, $episerverSiteId, $contentArray, $defaultEpiserverLanguageCode, $activeLanguageArray) {
+        $i = 0;
+        foreach($data as $languageData) {
+            foreach($languageData["Property"]["RawProperty"] as $tempData) {
+                if($tempData["Name"] == "PageLink" || $tempData["Name"] == "PageParentLink" || $tempData["Name"] == "PageDeleted" 
+                || $tempData["Name"] == "PageSaved" || $tempData["Name"] == "PageChanged" || $tempData["Name"] == "PageCreatedBy" 
+                || $tempData["Name"] == "PageMasterLanguageBranch" || $tempData["Name"] == "PageName" 
+                || $tempData["Name"] == "PageVisibleInMenu" || $tempData["Name"] == "IsFirstLevel"
+                || $tempData["Name"] == "PageLanguageBranch" || in_array($tempData["Name"], $contentArray)) {    
+                    $pageArray[$i][$tempData["Name"]] = $tempData["Value"];
+                }
+                //Set the parent id (pid)
+                $pageArray[$i]["pid"] = $pid;
+                $pageArray[$i]["EpiserverSiteId"] = $episerverSiteId;
+            }
+            $i++;    
+        }
+        
+        $newPageArray = "";
+        foreach($pageArray as $tempPageArray) {
+            if($tempPageArray["PageLanguageBranch"] != $defaultEpiserverLanguageCode) {
+                $tempPageArray["Typo3SystemLanguageUid"] = $activeLanguageArray[$tempPageArray["PageLanguageBranch"]];
+                $newPageArray[] = $tempPageArray;
+            }
+        }
+        
+        return $newPageArray;
     }
 
     /**
