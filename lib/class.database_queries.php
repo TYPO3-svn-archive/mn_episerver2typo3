@@ -98,8 +98,8 @@ class DatabaseQueries {
     public function updatePageData($pageArray) {
         $updateArray = array(
             'pid' => $pageArray["pid"],
-            'title' => $pageArray["PageName"],
-            'nav_title' => $pageArray["PageName"],
+            'title' => utf8_encode($pageArray["PageName"]),
+            'nav_title' => utf8_encode($pageArray["PageName"]),
             'tstamp' => mktime(),   
             'urltype' => 1,
             'doktype' => 1,
@@ -170,8 +170,8 @@ class DatabaseQueries {
             if($pageArray["PageName"] != "" && $pageArray[$contentItem] != "") {
                 $insertArray = array(
                     'pid' => $pid,
-                    'header' => $pageArray["PageName"],
-                    'bodytext' => $pageArray[$contentItem],
+                    'header' => utf8_encode($pageArray["PageName"]),
+                    'bodytext' => utf8_encode($pageArray[$contentItem]),
                     'tx_mnepiserver2typo3_episerver_id' => $pageArray["PageLink"],
                     'tx_mnepiserver2typo3_episerver_site_id' => $pageArray["EpiserverSiteId"],
                     'CType' => 'text',
@@ -347,8 +347,8 @@ class DatabaseQueries {
         if($pageArray["PageName"] != "") {
             $insertArray = array(
                 'pid' => $originalPid,
-                'title' => $pageArray["PageName"],
-                'nav_title' => $pageArray["PageName"],
+                'title' => utf8_encode($pageArray["PageName"]),
+                'nav_title' => utf8_encode($pageArray["PageName"]),
                 'tx_mnepiserver2typo3_episerver_id' => $pageArray["PageLink"],
                 'tx_mnepiserver2typo3_episerver_site_id' => $pageArray["EpiserverSiteId"],
                 'tstamp' => mktime(),
