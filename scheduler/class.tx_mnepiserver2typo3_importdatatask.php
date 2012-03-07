@@ -81,10 +81,17 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                         $episerverLanguageCode = $insertPage->getTranslatedLanguage($tempActiveLanguageArray["flag"]);
                         $activeLanguageArray[$episerverLanguageCode] = $activeLanguage["uid_foreign"];
                         if($i == 0) {
-                            $defaultLanguage = array("epiLanguageCode" => $episerverLanguageCode, "typo3LanguageUid" => $activeLanguage["uid_foreign"]);
+                            $typo3LanguageUid = $activeLanguage["uid_foreign"];
+                            //English is default in TYPO3.
+                            if($episerverLanguageCode == "en") {
+                                $typo3LanguageUid = 0;
+                            }
+                            $defaultLanguage = array("epiLanguageCode" => $episerverLanguageCode, "typo3LanguageUid" => $typo3LanguageUid);
                         }
                         $i++;
                     }
+                    //English is default in TYPO3.
+                    $activeLanguageArray["en"] = 0;
                 }
                 
                 $startPage = $webserviceObject->getPage($loginCredentials["episerver_startpage_id"], 0, "http://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
@@ -275,11 +282,12 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                     //print_r($page);
                     
                     if(sizeof($activeLanguageArray) > 0) {
-                        $pageNotDefaultLanguage = $webserviceObject->getLanguageBranches($pageId, 0, "http://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
+                        
+                        $pageNotDefaultLanguage = $webserviceObject->getLanguageBranches($page["PageLink"], 0, "http://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
                         $pageNotDefaultLanguageArray = $this->generateLanguagePageDataArray(
                             $pageNotDefaultLanguage["GetLanguageBranchesResult"]["RawPage"], 
                             $pageId, 
-                            $loginCredentials["uid"], 
+                            $page["PageLink"], 
                             $episerverContentArray, 
                             $defaultLanguage["epiLanguageCode"],
                             $activeLanguageArray
@@ -294,7 +302,6 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
                             );
                         }
                         
-                        exit;
                     }
                     
                 }
@@ -363,21 +370,51 @@ class tx_mnepiserver2typo3_ImportDataTask extends tx_scheduler_Task {
         return $pageArray;
     }
     
+    /**
+     * Generate a PageDataArray with language support
+     * 
+     * @param array $data
+     * @param string $pid
+     * @param string $episerverSiteId
+     * @param array $contentArray
+     * @param string $defaultEpiserverLanguageCode
+     * @param array $activeLanguageArray
+     * @return array $newPageArray
+     */
     private function generateLanguagePageDataArray($data, $pid, $episerverSiteId, $contentArray, $defaultEpiserverLanguageCode, $activeLanguageArray) {
         $i = 0;
         foreach($data as $languageData) {
-            foreach($languageData["Property"]["RawProperty"] as $tempData) {
-                if($tempData["Name"] == "PageLink" || $tempData["Name"] == "PageParentLink" || $tempData["Name"] == "PageDeleted" 
-                || $tempData["Name"] == "PageSaved" || $tempData["Name"] == "PageChanged" || $tempData["Name"] == "PageCreatedBy" 
-                || $tempData["Name"] == "PageMasterLanguageBranch" || $tempData["Name"] == "PageName" 
-                || $tempData["Name"] == "PageVisibleInMenu" || $tempData["Name"] == "IsFirstLevel"
-                || $tempData["Name"] == "PageLanguageBranch" || in_array($tempData["Name"], $contentArray)) {    
-                    $pageArray[$i][$tempData["Name"]] = $tempData["Value"];
-                }
-                //Set the parent id (pid)
-                $pageArray[$i]["pid"] = $pid;
-                $pageArray[$i]["EpiserverSiteId"] = $episerverSiteId;
+            //If more than language is present, made in EPiServer
+            if($languageData["Property"]) {
+                foreach($languageData["Property"]["RawProperty"] as $tempData) {
+                    if($tempData["Name"] == "PageLink" || $tempData["Name"] == "PageParentLink" || $tempData["Name"] == "PageDeleted" 
+                    || $tempData["Name"] == "PageSaved" || $tempData["Name"] == "PageChanged" || $tempData["Name"] == "PageCreatedBy" 
+                    || $tempData["Name"] == "PageMasterLanguageBranch" || $tempData["Name"] == "PageName" 
+                    || $tempData["Name"] == "PageVisibleInMenu" || $tempData["Name"] == "IsFirstLevel"
+                    || $tempData["Name"] == "PageLanguageBranch" || in_array($tempData["Name"], $contentArray)) {    
+                        $pageArray[$i][$tempData["Name"]] = $tempData["Value"];
+                    }
+                    //Set the parent id (pid)
+                    $pageArray[$i]["pid"] = $pid;
+                    $pageArray[$i]["EpiserverSiteId"] = $episerverSiteId;
+                }    
             }
+            //If only one language exist
+            else {
+                foreach($languageData["RawProperty"] as $tempData) {
+                    if($tempData["Name"] == "PageLink" || $tempData["Name"] == "PageParentLink" || $tempData["Name"] == "PageDeleted" 
+                    || $tempData["Name"] == "PageSaved" || $tempData["Name"] == "PageChanged" || $tempData["Name"] == "PageCreatedBy" 
+                    || $tempData["Name"] == "PageMasterLanguageBranch" || $tempData["Name"] == "PageName" 
+                    || $tempData["Name"] == "PageVisibleInMenu" || $tempData["Name"] == "IsFirstLevel"
+                    || $tempData["Name"] == "PageLanguageBranch" || in_array($tempData["Name"], $contentArray)) {    
+                        $pageArray[$i][$tempData["Name"]] = $tempData["Value"];
+                    }
+                    //Set the parent id (pid)
+                    $pageArray[$i]["pid"] = $pid;
+                    $pageArray[$i]["EpiserverSiteId"] = $episerverSiteId;
+                }
+            }
+            
             $i++;    
         }
         
