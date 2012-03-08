@@ -60,8 +60,6 @@ class tx_propertyfields_tca {
                         hiddenInput = item;
                     });
                     
-                    //console.log(hiddenInput.getValue().split(","));
-                    
                     //Hide default input type in TCA
                     hiddenInput.parentNode.hide();
                     
