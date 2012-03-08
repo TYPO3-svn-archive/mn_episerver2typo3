@@ -157,7 +157,7 @@ class WebserviceConnect {
     }
      
     /**
-     * Get page languages from EPiServer.
+     * Get PageData object with different languages from EPiServer.
      * 
      * @param integer $pageId
      * @param integer $workId
@@ -182,15 +182,6 @@ class WebserviceConnect {
         	if ($err) {
         		$success = false;
         	} else {
-                /*$tempArray = array();
-                foreach($result["GetLanguageBranchesResult"]["RawPage"] as $languageArray) {
-                    foreach($languageArray["Property"]["RawProperty"] as $languageProperty) {
-                        if($languageProperty["Name"] == "PageLanguageBranch") {
-                            $tempArray[] = $languageProperty["Value"];
-                        }
-                    }
-                }
-                $success = $tempArray;*/
                 $success = $result;
         	}
         }
