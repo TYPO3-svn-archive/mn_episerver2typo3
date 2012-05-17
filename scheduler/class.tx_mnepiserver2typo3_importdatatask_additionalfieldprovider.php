@@ -33,7 +33,7 @@ require_once(t3lib_extMgm::extPath('mn_episerver2typo3') . "lib/class.database_q
  *
  * $Id$
  */
-class tx_mnepiserver2typo3_ImportLanguagesTask_AdditionalFieldProvider implements tx_scheduler_AdditionalFieldProvider {
+class tx_mnepiserver2typo3_ImportDataTask_AdditionalFieldProvider implements tx_scheduler_AdditionalFieldProvider {
 
 	/**
 	 * This method is used to define new fields for adding or editing a task
